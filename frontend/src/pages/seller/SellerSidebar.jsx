@@ -1,5 +1,13 @@
 import React from "react";
-import { FaChartPie, FaBox, FaShoppingCart, FaFileAlt, FaCog } from "react-icons/fa";
+import {
+  FaChartPie,
+  FaBox,
+  FaShoppingCart,
+  FaFileAlt,
+  FaCog,
+  FaUsers,
+} from "react-icons/fa";
+
 
 const menuItems = [
   { name: "Overview", icon: <FaChartPie /> },
@@ -7,6 +15,7 @@ const menuItems = [
   { name: "Orders", icon: <FaShoppingCart /> },
   { name: "Reports", icon: <FaFileAlt /> },
   { name: "Settings", icon: <FaCog /> },
+  { name: "Sellers", icon: <FaUsers /> },
 ];
 
 export default function SellerSidebar({ activeTab, setActiveTab }) {

@@ -13,13 +13,15 @@ import novel from "./assets/novel.webp";
 import novel1 from "./assets/novel1.webp";
 
 const oldCategories = [
-  { id: 101, name: "Old Shirts", image: oldShirts, price: 1499 },
-  { id: 102, name: "Old Phone", image: oldPhone, price: 4999 },
-  { id: 103, name: "Old T-Shirt", image: oldTshirt, price: 799 },
-  { id: 104, name: "Classic Perfume", image: oldPerfum, price: 1299 },
-  { id: 105, name: "Classic Perfume Set", image: oldPerfum1, price: 1999 },
-  { id: 106, name: "Old Novel", image: novel, price: 399 },
-  { id: 107, name: "Old Novel Volume 2", image: novel1, price: 449 },
+  { id: 101, name: "Old Shirts", image: oldShirts, price: 1499 ,description:"Comfortable old shirt"},
+  { id: 102, name: "Old Phone", image: oldPhone, price: 4999 ,description:"Good old phone"},
+  { id: 103, name: "Old T-Shirt", image: oldTshirt, price: 799 ,description:"Comfortable old t-shirt"},
+  { id: 104, name: "Classic Perfume", image: oldPerfum, price: 1299 ,description:"Best old perfume"},
+  { id: 105, name: "Classic Perfume Set", image: oldPerfum1, price: 1999 ,description:"Best old perfume set"},
+  { id: 106, name: "Old Novel", image: novel, price: 399 ,description:"Old novel book"},
+    { id: 107, name: "Old T-Shirt", image: oldTshirt, price: 799 ,description:"Comfortable old t-shirt"},
+  { id: 108, name: "Classic Perfume", image: oldPerfum, price: 1299 ,description:"Best old perfume"},
+  { id: 109, name: "Old Novel Volume 2", image: novel1, price: 449 ,description:"Old novel book volume 2"},
 ];
 
 export default function OldCategories() {
@@ -67,7 +69,7 @@ export default function OldCategories() {
       {/* Product list */}
       <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-4">
         {loading
-          ? Array(8).fill(0).map((_, i) => <ProductCardSkeleton key={i} />) // skeletons
+          ? Array(8).fill(0).map((_, i) => <ProductCardSkeleton key={i} />) 
           : oldCategories.map((item) => (
               <ProductCard key={item.id} product={item} />
             ))}

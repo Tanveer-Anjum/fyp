@@ -22,6 +22,15 @@ const featuredProducts = [
   { id: 206, name: "Trouser", price: 2500, image: trousers, brand:"Gucci", colors:["Black","Brown","White"], rating:4.1, reviews: 50, description:"Comfortable Trouser" },
   { id: 207, name: "Cup", price: 200, image: cups, brand:"No brand", colors:["Blue","White"], rating:4.0, reviews: 33, description:"Best Quality Cups" },
   { id: 210, name: "Air Pods", price: 2000, image: airpods, brand:"No brand", colors:["Blue","White"], rating:4.8, reviews: 500, description:"High Quality Air pods" },
+    { id: 211, name: "Football", price: 2800, image: football, brand:"No brand", colors:["Black","White","Red"], rating:4.6, reviews: 140, description:"Best football" },
+      { id: 212, name: "Featured Samsung S23", price: 250000, image: samsung, brand:"Samsung", colors:["Black","Silver"], rating:4.5, reviews: 210, description:"Flagship Samsung" },
+  { id: 213, name: "Featured Shirt", price: 2000, image: tshirt, brand:"Levis", colors:["Blue","White"], rating:4.2, reviews: 85, description:"Comfortable shirt" },
+    { id: 214, name: "Featured Samsung S23", price: 250000, image: samsung, brand:"Samsung", colors:["Black","Silver"], rating:4.5, reviews: 210, description:"Flagship Samsung" },
+  { id: 215, name: "Featured Shirt", price: 2000, image: tshirt, brand:"Levis", colors:["Blue","White"], rating:4.2, reviews: 85, description:"Comfortable shirt" },
+  { id: 216, name: "Makeup Set", price: 2000, image: beauty, brand:"Generic", colors:["Blue","White"], rating:4.7, reviews: 60, description:"High Quality makeup" },
+  { id: 285, name: "Football", price: 2800, image: football, brand:"No brand", colors:["Black","White","Red"], rating:4.6, reviews: 140, description:"Best football" },
+  { id: 234, name: "Trouser", price: 2500, image: trousers, brand:"Gucci", colors:["Black","Brown","White"], rating:4.1, reviews: 50, description:"Comfortable Trouser" },
+  { id: 241, name: "Trouser", price: 2500, image: trousers, brand:"Gucci", colors:["Black","Brown","White"], rating:4.1, reviews: 50, description:"Comfortable Trouser" },
 ];
 
 export default function FeaturedProducts() {

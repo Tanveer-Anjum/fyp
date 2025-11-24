@@ -1,0 +1,13 @@
+{
+  "type": "service_account",
+  "project_id": "bazzario",
+  "private_key_id": "6a7831718e3363b54e780948d6523e37565071c5",
+  "private_key": "-----BEGIN PRIVATE KEY-----\nMIIEvQIBADANBgkqhkiG9w0BAQEFAASCBKcwggSjAgEAAoIBAQC3KmsfI7oKzSd+\nkTV+JHt0urMn6GyuiTDh/Dfxh7worKNUUHDLpS1BcdOLT5yPSbSqJ2idpOjUFCUK\nCe4+AySsSHlKHHH1gUUm1i+DU3JJbJYqifA8ejZvM7B9fA6WNtRFV0rnpSaZB6za\n4dCKUozZbUakI3r3WMBfsLpbl1hqJIrGJqnxtUvB18nXN7E91120LhuLESqb2Glm\n/msfTzrmnMLUo7bLeHeTb6mJskbLnRETFs2cO3sgX4dcL/MMEwyT/YyyjsXp2Ffv\nDYm9iuepvahHz45im8R4uiNwiIuV2c+RQGmfuiqxAYdl7VN5a+d5oaVnZzMUoGhI\npIxIHAiLAgMBAAECggEABq3/VhVhdX9hz1XQU5dVAT7FxdDOFdde9v7Rs3c1v238\nTtjYJDUT320dP9lZZkhT1Fi3kfgvnXxWlXUjQROwRLAn7DH5XfCm6vGoretfIZpa\nJ5b8MdhrH8cMyqa5iXTabOTwEF6Pd8k13o2Zo1G7XTqE9vtsQpTz/wlc4nY0fTpk\nHPCdPLi9fBhqGw2LFUmHwNtzgPQc8aLYea9I8JwDzs2B2JWUybaVFnuRQotJcMe0\nxVYzS4KEAMHbS/wkkYLvme63QU1A0aCaLeyaYrvx2rv+xixuEbvsApTbew10EUUn\n3bf3nCIFyuwkq9gLLrZ296nH2zltgEmvuptjt1L40QKBgQDjmAS65kBUkXAYIp6J\n2suAotHZjQ0PGNjqTt7EUBhzpzAbycCS+Vxrqd/A1USwtUYgnDWujMGV2CAcOLHj\nBnN636FE+0WfzM8MaE7tEGacc24yuI5iQrZeelfixbZx2sgxthJ6rjAdjnQTbjMl\ncy97r8BZYJOMfnn0c91OeX9nTwKBgQDOBtnvVIKnaFQtlcmN6YO39xiGEp9uqIKX\nPrXB0C7OqHfv3pqVpnmT1O0f9pC4kgoUjo3vGtm08e4Bwaa0zHpjjY017u4XBfY/\n5tkkkQrzvDe7l+irySKxxpeWlN6esAMkS+FP+iXNMcT7JUfjLbD+hQiNQgehQudB\nBzc/Ou+8BQKBgEHuIsiltNMKwqcrODQFHtin0hSsiLDr6MKPkHbcIQk30HbsTg4F\nkKFbt4bcAScTjDocJmznN5kZ38ttHRMAJmnc6JHcHII7SWt1uA9ypdcClVS6I/0R\nCFV8KYN29PAsibvk25uQZD3bq4KJdOWPZZz1/8mkcXnMlbWb7usxxRd/AoGBAIrn\n/6PnHLf2FVsutFfj6xTrmjM69xdKsdF7TFxCGmznFQY61Yq0VSAg3UdBnE102SsG\n+hcNyV7ABrJUeCtJ+fKJC34je482S9LFt/15dSLj8cefIhZAZA3sUWQLNxVSoquk\nJWMgyr/QIHkbp545vi28UAm9TRui2fvz+4G8IMppAoGABNOoj93MxdTRHZyZUNwe\nG7f8P2LzaLIrdh7eSCnHhprkEo+/njLPsJgz0eYGmkMm5QGpJpP85Z+6r9BuaJJy\nSKe/xRfuKwAd7+oUZTeTCyHNhpC/tGGNdMfS4D1XxUDgZjCd9eUG1QnhNqs9Sgju\naxODKSezJrycvSV7uNVrVbY=\n-----END PRIVATE KEY-----\n",
+  "client_email": "genai-bot-service@bazzario.iam.gserviceaccount.com",
+  "client_id": "117519915110280655693",
+  "auth_uri": "https://accounts.google.com/o/oauth2/auth",
+  "token_uri": "https://oauth2.googleapis.com/token",
+  "auth_provider_x509_cert_url": "https://www.googleapis.com/oauth2/v1/certs",
+  "client_x509_cert_url": "https://www.googleapis.com/robot/v1/metadata/x509/genai-bot-service%40bazzario.iam.gserviceaccount.com",
+  "universe_domain": "googleapis.com"
+}

@@ -149,7 +149,7 @@ export default function ProductListingPage() {
                 <div className="flex justify-center mt-8">
                   <button
                     onClick={() => setVisibleCount((c) => c + 6)}
-                    className="px-6 py-3 rounded-full bg-gradient-to-r from-blue-600 to-indigo-600 text-white font-semibold shadow-lg hover:from-blue-700 hover:to-indigo-700 active:scale-[0.99] transition-colors duration-200"
+                    className="px-6 py-3 text-black font-semibold shadow-lg hover:from-blue-700 hover:to-indigo-700 active:scale-[0.99] transition-colors duration-200"
                   >
                     Load More
                   </button>

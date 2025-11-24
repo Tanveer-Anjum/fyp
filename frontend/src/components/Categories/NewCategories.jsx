@@ -15,12 +15,16 @@ import bottleImg from "../../assets/waterbottle.jpg";
 
 const newCategories = [
   { id: 201, name: "New Perfume", image: newPerfum, price: 2999 },
+    { id: 211, name: "Airpods", image: airpodsImg, price: 9999 },
+      { id: 206, name: "Shirt", image: shirtImg, price: 1999 },
+  { id: 207, name: "Water Bottle", image: bottleImg, price: 799 },
+  { id: 205, name: "Earphone", image: earphoneImg, price: 2499 },
   { id: 202, name: "New Novel", image: novel, price: 699 },
   { id: 203, name: "New Novel Volume 2", image: novel1, price: 749 },
   { id: 204, name: "Airpods", image: airpodsImg, price: 9999 },
-  { id: 205, name: "Earphone", image: earphoneImg, price: 2499 },
-  { id: 206, name: "Shirt", image: shirtImg, price: 1999 },
-  { id: 207, name: "Water Bottle", image: bottleImg, price: 799 },
+  { id: 233, name: "Earphone", image: earphoneImg, price: 2499 },
+  { id: 290, name: "Shirt", image: shirtImg, price: 1999 },
+  { id: 241, name: "Water Bottle", image: bottleImg, price: 799 },
 ];
 
 export default function NewCategories() {

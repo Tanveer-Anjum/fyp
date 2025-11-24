@@ -1,32 +1,38 @@
-import React, { useState } from "react";
+import axios from "axios";
+import { useState } from "react";
 import { FaTimes } from "react-icons/fa";
 
-export default function ChatBox({ onClose }) {
+function ChatBox({ onClose }) {
   const [messages, setMessages] = useState([
-    { from: "bot", text: "👋 Hi! How can I help you today?" },
+    { sender: "bot", text: "👋 Hi! How can I help you today?" },
   ]);
   const [input, setInput] = useState("");
 
-  const handleSend = () => {
-    if (input.trim() === "") return;
+  const handleSend = async () => {
+    if (!input.trim()) return;
 
-    // Add user message
-    setMessages([...messages, { from: "user", text: input }]);
+    const userMessage = { sender: "user", text: input };
+    setMessages((prev) => [...prev, userMessage]);
 
-    // Clear input
-    setInput("");
+    try {
+      const response = await axios.post("http://localhost:5000/api/chat", {
+        message: input,
+      });
 
-    // Simulate bot reply
-    setTimeout(() => {
+      const botMessage = { sender: "bot", text: response.data.reply };
+      setMessages((prev) => [...prev, botMessage]);
+    } catch (error) {
       setMessages((prev) => [
         ...prev,
-        { from: "bot", text: "Thanks for your message. Our system is under training 🤖" },
+        { sender: "bot", text: "⚠️ Error: Chatbot not responding." },
       ]);
-    }, 1000);
+    }
+
+    setInput("");
   };
 
   return (
-    <div className="fixed bottom-20 h-60 right-5 w-80 bg-white rounded-lg shadow-xl flex flex-col">
+    <div className="fixed bottom-5 right-5 w-80 bg-white rounded-lg shadow-xl flex flex-col border-2 border-green-500">
       {/* Header */}
       <div className="bg-green-600 text-white p-3 flex justify-between items-center rounded-t-lg">
         <h4 className="font-semibold">Chat Support</h4>
@@ -37,13 +43,13 @@ export default function ChatBox({ onClose }) {
 
       {/* Messages */}
       <div className="flex-1 p-3 overflow-y-auto max-h-60 space-y-2">
-        {messages.map((msg, index) => (
+        {messages.map((msg, i) => (
           <div
-            key={index}
-            className={`p-2 rounded-md max-w-[75%] ${
-              msg.from === "user"
-                ? "bg-green-100 self-end text-right ml-auto"
-                : "bg-gray-100 self-start"
+            key={i}
+            className={`p-2 rounded-md max-w-[75%] break-words ${
+              msg.sender === "user"
+                ? "bg-orange-200 self-end text-right ml-auto"
+                : "bg-green-100 self-start"
             }`}
           >
             {msg.text}
@@ -58,11 +64,12 @@ export default function ChatBox({ onClose }) {
           value={input}
           onChange={(e) => setInput(e.target.value)}
           placeholder="Type a message..."
-          className="flex-1 border rounded-md px-2 py-1 text-sm"
+          className="flex-1 border border-green-400 rounded-md px-2 py-1 text-sm focus:outline-none focus:ring-2 focus:ring-green-400"
+          onKeyDown={(e) => e.key === "Enter" && handleSend()}
         />
         <button
           onClick={handleSend}
-          className="bg-green-600 text-white px-3 py-1 rounded-md hover:bg-green-700 transition"
+          className="bg-orange-500 text-white px-3 py-1 rounded-md hover:bg-orange-600 transition"
         >
           Send
         </button>
@@ -70,3 +77,5 @@ export default function ChatBox({ onClose }) {
     </div>
   );
 }
+
+export default ChatBox;

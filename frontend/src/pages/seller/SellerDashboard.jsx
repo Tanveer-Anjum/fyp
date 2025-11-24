@@ -5,6 +5,7 @@ import ProductsTab from "./tabs/ProductsTab";
 import OrdersTab from "./tabs/OrdersTab";
 import ReportsTab from "./tabs/ReportsTab";
 import SettingsTab from "./tabs/SettingsTab";
+import SellersTab from "./tabs/SellersTab";
 
 export default function SellerDashboard() {
   const [activeTab, setActiveTab] = useState("Overview");
@@ -16,6 +17,7 @@ export default function SellerDashboard() {
       case "Orders": return <OrdersTab />;
       case "Reports": return <ReportsTab />;
       case "Settings": return <SettingsTab />;
+      case "Sellers": return <SellersTab />;
       default: return <OverviewTab />;
     }
   };
