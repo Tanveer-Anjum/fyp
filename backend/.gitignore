@@ -16,3 +16,6 @@ pnpm-debug.log*
 # Editor directories and files
 .idea
 *.suo
+backend/firebase-service-account.json
+
+backend/bazzario-6a7831718e33.json
