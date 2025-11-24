@@ -19,3 +19,6 @@ pnpm-debug.log*
 backend/firebase-service-account.json
 
 backend/bazzario-6a7831718e33.json
+
+backend/*.json
+*.json
