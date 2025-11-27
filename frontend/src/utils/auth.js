@@ -17,9 +17,12 @@
 
 
 
+
+
+
 // src/utils/auth.js
 
-// ✅ Save token and user info in localStorage
+ //Save token and user info in localStorage
 export const saveAuth = (token, user, expirySeconds = 15) => {
   const tokenData = {
     token,
@@ -30,7 +33,7 @@ export const saveAuth = (token, user, expirySeconds = 15) => {
   localStorage.setItem("user", JSON.stringify(user)); // keep user info separately
 };
 
-// ✅ Check if token is valid
+// Check if token is valid
 export const isLoggedIn = () => {
   const tokenData = JSON.parse(localStorage.getItem("authToken"));
   if (!tokenData) return false;
@@ -58,3 +61,14 @@ export const logout = () => {
   localStorage.removeItem("authToken");
   localStorage.removeItem("user");
 };
+
+
+
+
+
+
+
+
+
+
+

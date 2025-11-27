@@ -8,6 +8,10 @@ import connectDB from "./config/db.js";
 
 import authRoutes from "./routes/authRoutes.js";
 import googleAuthRoute from "./routes/googleAuthRoute.js";
+import adminRoutes from "./routes/adminRoutes.js";
+
+
+
 
 
 
@@ -32,7 +36,9 @@ app.use(express.json());
 // AUTH ROUTES
 // --------------------
 app.use("/api/auth", authRoutes); 
-app.use("/api/auth", googleAuthRoute);       
+app.use("/api/auth", googleAuthRoute);  
+app.use("/api/admin", adminRoutes);
+   
 
 
 // --------------------
@@ -101,3 +107,9 @@ const PORT = process.env.PORT || 8080;
 app.listen(PORT, () => {
   console.log(`🚀 Server running on http://localhost:${PORT}`);
 });
+
+
+
+
+
+

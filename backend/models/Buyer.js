@@ -1,19 +1,3 @@
-// import mongoose from "mongoose";
-
-// const buyerSchema = new mongoose.Schema({
-//   name: { type: String, required: true, trim: true },
-//   email: { type: String, required: true, unique: true },
-//   phone: { type: String },
-//   password: { type: String, required: true },
- 
-//   role: { type: String, default: "buyer" }, // 👈 important
-// }, { timestamps: true });
-
-// export default mongoose.model("Buyer", buyerSchema);
-
-
-
-
 
 
 import mongoose from "mongoose";
@@ -33,3 +17,9 @@ const buyerSchema = new mongoose.Schema(
 );
 
 export default mongoose.model("User", buyerSchema);
+
+
+
+
+
+

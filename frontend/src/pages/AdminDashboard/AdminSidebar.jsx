@@ -1,5 +1,5 @@
 import React from "react";
-import { FaChartPie, FaBox, FaShoppingCart, FaUsers, FaFileAlt, FaCog } from "react-icons/fa";
+import { FaChartPie, FaBox, FaShoppingCart, FaUsers, FaFileAlt, FaCog, FaStore } from "react-icons/fa";
 
 const menuItems = [
   { name: "Overview", icon: <FaChartPie /> },
@@ -8,6 +8,7 @@ const menuItems = [
   { name: "Users", icon: <FaUsers /> },
   { name: "Reports", icon: <FaFileAlt /> },
   { name: "Settings", icon: <FaCog /> },
+  { name: "Shop Details", icon: <FaStore /> }, // Updated display name
 ];
 
 export default function AdminSidebar({ activeTab, setActiveTab }) {
@@ -19,12 +20,14 @@ export default function AdminSidebar({ activeTab, setActiveTab }) {
           <li
             key={item.name}
             className={`flex items-center gap-3 p-2 rounded cursor-pointer transition ${
-              activeTab === item.name ? "bg-green-100 text-green-700 font-semibold" : "hover:bg-gray-100 text-gray-700"
+              activeTab === item.name
+                ? "bg-green-100 text-green-700 font-semibold"
+                : "hover:bg-gray-100 text-gray-700"
             }`}
             onClick={() => setActiveTab(item.name)}
           >
             {item.icon}
-            {item.name}
+            <span>{item.name}</span> {/* Ensure readable display */}
           </li>
         ))}
       </ul>

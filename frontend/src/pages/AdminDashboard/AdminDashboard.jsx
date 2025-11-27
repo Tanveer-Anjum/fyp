@@ -7,6 +7,7 @@ import UsersTab from "./tabs/UsersTab";
 import ReportsTab from "./tabs/ReportsTab";
 import SettingsTab from "./tabs/SettingsTab";
 import AddProductForm from "../../components/forms/AddProductForm";
+import ShopDetails from "./tabs/ShopTab";
 
 export default function AdminDashboard() {
   const [activeTab, setActiveTab] = useState("Overview");
@@ -19,6 +20,7 @@ export default function AdminDashboard() {
       case "Users": return <UsersTab />;
       case "Reports": return <ReportsTab />;
       case "Settings": return <SettingsTab />;
+      case "Shop Details": return <ShopDetails />;
       default: return <OverviewTab />;
     }
   };
