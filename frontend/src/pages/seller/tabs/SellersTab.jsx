@@ -181,24 +181,59 @@ export default function SellersTab() {
     setActionLoading(false);
   };
 
-  const handleDelete = async () => {
+  // const handleDelete = async () => {
     
-    setActionLoading(true);
-    const authData = JSON.parse(localStorage.getItem("authToken"));
-    if (!authData?.token) return;
+  //   setActionLoading(true);
+  //   const authData = JSON.parse(localStorage.getItem("authToken"));
+  //   if (!authData?.token) return;
 
-    const res = await fetch(`http://localhost:8080/api/seller/${seller._id}`, {
-      method: "DELETE",
-      headers: { Authorization: `Bearer ${authData.token}` },
-    });
-    const data = await res.json();
-    if (data.success) {
-      setSeller(null);
-    } else {
-      console.error(data.message);
-    }
-    setActionLoading(false);
-  };
+  //   const res = await fetch(`http://localhost:8080/api/seller/${seller._id}`, {
+  //     method: "DELETE",
+  //     headers: { Authorization: `Bearer ${authData.token}` },
+  //   });
+  //   const data = await res.json();
+  //   if (data.success) {
+  //     setSeller(null);
+  //   } else {
+  //     console.error(data.message);
+  //   }
+  //   setActionLoading(false);
+  // };
+
+
+
+
+
+const handleDelete = async () => {
+  setActionLoading(true); // optional, if you have loading state
+
+  const authData = JSON.parse(localStorage.getItem("authToken"));
+  if (!authData?.token) return;
+
+  const res = await fetch(`http://localhost:8080/api/seller/${seller._id}`, {
+    method: "DELETE",
+    headers: { Authorization: `Bearer ${authData.token}` },
+  });
+
+  const data = await res.json();
+
+  setActionLoading(false);
+
+  if (data.success) {
+    alert("Seller deleted successfully!");
+
+    // Clear auth info
+    localStorage.removeItem("authToken");
+
+    // Redirect to login page (or home)
+    window.location.href = "/signin";
+  } else {
+    alert(data.message);
+  }
+};
+
+
+
 
   if (loading)
     return (

@@ -10,6 +10,7 @@ import authRoutes from "./routes/authRoutes.js";
 import googleAuthRoute from "./routes/googleAuthRoute.js";
 import adminRoutes from "./routes/adminRoutes.js";
 import sellerRouter from "./routes/sellerRoutes.js";
+import mainAdmin from "./routes/mainAdmin.js";
 
 
 
@@ -40,6 +41,8 @@ app.use("/api/auth", authRoutes);
 app.use("/api/auth", googleAuthRoute);  
 app.use("/api/admin", adminRoutes);
 app.use("/api/seller", sellerRouter);
+app.use("/api/main-admin", mainAdmin);
+// Admin routes
    
 
 
