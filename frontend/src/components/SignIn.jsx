@@ -320,7 +320,7 @@ export default function SignIn() {
 
       // Redirect based on role
       if (user.role === "seller") navigate("/seller/dashboard");
-      else navigate("/seller");
+      else navigate("/");
 
     } catch (error) {
       console.error(error);

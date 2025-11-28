@@ -20,17 +20,76 @@
 
 
 
+// // src/utils/auth.js
+
+//  //Save token and user info in localStorage
+// export const saveAuth = (token, user, expirySeconds = 15) => {
+//   const tokenData = {
+//     token,
+//     expiry: new Date().getTime() + expirySeconds * 1000, // e.g. 15 sec
+//   };
+
+//   localStorage.setItem("authToken", JSON.stringify(tokenData));
+//   localStorage.setItem("user", JSON.stringify(user)); // keep user info separately
+// };
+
+// // Check if token is valid
+// export const isLoggedIn = () => {
+//   const tokenData = JSON.parse(localStorage.getItem("authToken"));
+//   if (!tokenData) return false;
+
+//   return new Date().getTime() < tokenData.expiry; // true if still valid
+// };
+
+// // ✅ Always return user (even if token expired)
+// export const getUser = () => {
+//   return JSON.parse(localStorage.getItem("user"));
+// };
+
+// // ✅ Get first name / email prefix
+// export const getUserInitial = () => {
+//   const user = getUser();
+//   if (!user) return null;
+
+//   if (user.name) return user.name.split(" ")[0];
+//   if (user.email) return user.email.split("@")[0];
+//   return null;
+// };
+
+// // ✅ Clear everything (logout)
+// export const logout = () => {
+//   localStorage.removeItem("authToken");
+//   localStorage.removeItem("user");
+// };
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 // src/utils/auth.js
 
- //Save token and user info in localStorage
-export const saveAuth = (token, user, expirySeconds = 15) => {
+// Save token + user info with optional expiry in seconds (default 20s)
+export const saveAuth = (token, user, expirySeconds = 20) => {
   const tokenData = {
     token,
-    expiry: new Date().getTime() + expirySeconds * 1000, // e.g. 15 sec
+    expiry: new Date().getTime() + expirySeconds * 1000, // expiry timestamp
   };
 
   localStorage.setItem("authToken", JSON.stringify(tokenData));
-  localStorage.setItem("user", JSON.stringify(user)); // keep user info separately
+  localStorage.setItem("user", JSON.stringify(user));
 };
 
 // Check if token is valid
@@ -38,15 +97,20 @@ export const isLoggedIn = () => {
   const tokenData = JSON.parse(localStorage.getItem("authToken"));
   if (!tokenData) return false;
 
-  return new Date().getTime() < tokenData.expiry; // true if still valid
+  if (new Date().getTime() > tokenData.expiry) {
+    logout(); // auto logout if expired
+    return false;
+  }
+
+  return true;
 };
 
-// ✅ Always return user (even if token expired)
+// Get user info (even if token expired)
 export const getUser = () => {
   return JSON.parse(localStorage.getItem("user"));
 };
 
-// ✅ Get first name / email prefix
+// Get first name or email prefix
 export const getUserInitial = () => {
   const user = getUser();
   if (!user) return null;
@@ -56,19 +120,17 @@ export const getUserInitial = () => {
   return null;
 };
 
-// ✅ Clear everything (logout)
+// Logout and clear storage
 export const logout = () => {
   localStorage.removeItem("authToken");
   localStorage.removeItem("user");
 };
 
-
-
-
-
-
-
-
-
-
-
+// Check expiry manually (call in Navbar interval)
+export const checkExpiry = () => {
+  const tokenData = JSON.parse(localStorage.getItem("authToken"));
+  if (tokenData && new Date().getTime() > tokenData.expiry) {
+    logout();
+    window.dispatchEvent(new Event("storage")); // trigger update in Navbar
+  }
+};
