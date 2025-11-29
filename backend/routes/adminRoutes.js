@@ -52,4 +52,34 @@ router.put("/sellers/:id", async (req, res) => {
   }
 });
 
+
+// GET all users
+router.get("/all-users", async (req, res) => {
+  try {
+    const users = await User.find(); // Fetch all users
+    res.json({ success: true, users });
+  } catch (error) {
+    res.status(500).json({ success: false, message: "Failed to fetch users" });
+  }
+});
+
+// DELETE a user by ID
+router.delete("/users/:id", async (req, res) => {
+  try {
+    const { id } = req.params;
+    const user = await User.findById(id);
+
+    if (!user) {
+      return res.status(404).json({ success: false, message: "User not found" });
+    }
+
+    await User.findByIdAndDelete(id);
+    res.json({ success: true, message: "User deleted successfully" });
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ success: false, message: "Server error while deleting user" });
+  }
+});
+
+
 export default router;

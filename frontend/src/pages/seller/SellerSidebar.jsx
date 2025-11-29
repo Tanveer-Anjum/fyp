@@ -14,7 +14,7 @@ const menuItems = [
   { name: "Products", icon: <FaBox /> },
   { name: "Orders", icon: <FaShoppingCart /> },
   { name: "Reports", icon: <FaFileAlt /> },
-  { name: "Settings", icon: <FaCog /> },
+
   { name: "Sellers", icon: <FaUsers /> },
 ];
 
