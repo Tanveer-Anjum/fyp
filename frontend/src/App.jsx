@@ -21,6 +21,7 @@ import Categories from "./components/Categories/Categories";
 import OldCategories from "./components/Categories/OldCategories";
 import NewCategories from "./components/Categories/NewCategories";
 import ProductListingPage from "./components/Categories/ProductListingPage";
+import ReviewPage from "./pages/ReviewPage";
 
 function App() {
   return (
@@ -59,6 +60,8 @@ function App() {
               <Route path="/user/dashboard" element={<UserDashboard />} />
               <Route path="/admin/dashboard/*" element={<AdminDashboard />} />
               <Route path="/seller/dashboard/*" element={<SellerDashboard />} />
+              <Route path="/review/:id" element={<ReviewPage />} />
+
             </Routes>
           </main>
 

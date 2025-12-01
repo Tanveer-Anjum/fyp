@@ -2,10 +2,10 @@ import React, { useState } from "react";
 import DashboardSidebar from "./DashboardSidebar";
 import ProfileTab from "./user/ProfileTab";
 import OrdersTab from "./user/OrdersTab";
-import WishlistTab from "./user/WishlistTab";
+
 import CartTab from "./user/CartTab";
 import ReviewsTab from "./user/ReviewsTab";
-import CancellationsTab from "./user/CancellationsTab";
+
 
 const UserDashboard = () => {
   const [activeTab, setActiveTab] = useState("Profile");
@@ -17,14 +17,12 @@ const UserDashboard = () => {
         return <ProfileTab />;
       case "Orders":
         return <OrdersTab />;
-      case "Wishlist":
-        return <WishlistTab />;
+    
       case "Cart":
         return <CartTab />;
         case "My Reviews":
             return <ReviewsTab/>;
-            case "My Cancellations":
-                return <CancellationsTab/>;
+        
     
       default:
         return <ProfileTab />;

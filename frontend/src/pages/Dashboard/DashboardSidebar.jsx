@@ -1,7 +1,7 @@
 import React from "react";
 
 const DashboardSidebar = ({ activeTab, setActiveTab, sidebarOpen, setSidebarOpen }) => {
-  const tabs = ["Profile", "Orders", "Wishlist", "Cart","My Reviews","My Cancellations"];
+  const tabs = ["Profile", "Orders", "Cart","My Reviews"];
 
   return (
     <>

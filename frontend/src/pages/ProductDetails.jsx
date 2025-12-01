@@ -31,11 +31,28 @@ const ProductDetails = () => {
   const [isCheckoutOpen, setIsCheckoutOpen] = useState(false);
   const [quantity, setQuantity] = useState(1);
 
-  const handleAddToCart = () => {
-    const safeQty = Math.max(1, Number(quantity) || 1);
-    addToCart({ ...product, selectedColor, quantity: safeQty });
-    alert("Product added to cart!");
-  };
+  // const handleAddToCart = () => {
+  //   const safeQty = Math.max(1, Number(quantity) || 1);
+  //   addToCart({ ...product, selectedColor, quantity: safeQty });
+  //   alert("Product added to cart!");
+  // };
+
+
+const handleAddToCart = () => {
+  const safeQty = Math.max(1, Number(quantity) || 1);
+
+  addToCart({
+    ...product,
+    image: product.image, // ensure image exists
+    quantity: safeQty,
+    selectedColor: selectedColor || null,
+  });
+
+  alert("Product added to cart!");
+};
+
+
+
 
   if (!product) return <p className="text-center mt-20">Loading product...</p>;
 
