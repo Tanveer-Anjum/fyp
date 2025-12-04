@@ -1,7 +1,7 @@
 import jwt from "jsonwebtoken";
-import Admin from "../models/admin.js";
+import User from "../models/User.js"; // Changed from Admin to User
 
-export const verifyAdminToken = async (req, res, next) => {
+const adminAuth = async (req, res, next) => {
   const authHeader = req.headers.authorization;
   if (!authHeader) return res.status(401).json({ success: false, message: "No token provided" });
 
@@ -14,13 +14,15 @@ export const verifyAdminToken = async (req, res, next) => {
       return res.status(403).json({ success: false, message: "Unauthorized" });
     }
 
-    const admin = await Admin.findById(decoded.id).select("-password");
-    if (!admin) return res.status(404).json({ success: false, message: "Admin not found" });
+    const user = await User.findById(decoded.id).select("-password"); // Changed from Admin.findById to User.findById and variable to user
+    if (!user || user.role !== "admin") return res.status(404).json({ success: false, message: "Admin not found or not an admin role" }); // Added role check
 
-    req.admin = admin;
+    req.user = user; // Changed req.admin to req.user
     next();
   } catch (err) {
     console.error(err);
     res.status(403).json({ success: false, message: "Invalid token" });
   }
 };
+
+export default adminAuth;

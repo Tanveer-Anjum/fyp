@@ -11,6 +11,7 @@ import googleAuthRoute from "./routes/googleAuthRoute.js";
 import adminRoutes from "./routes/adminRoutes.js";
 import sellerRouter from "./routes/sellerRoutes.js";
 import mainAdmin from "./routes/mainAdmin.js";
+import userRoutes from "./routes/userRoutes.js"; // Import the new user routes
 
 
 
@@ -19,6 +20,9 @@ import mainAdmin from "./routes/mainAdmin.js";
 
 import axios from "axios";
 import { GoogleGenerativeAI } from "@google/generative-ai";
+import Product from "./routes/product.js";
+import productRoutes from "./routes/productRoutes.js";
+import orderRoutes from "./routes/orderRoutes.js"; // Import the new order routes
 
 // --------------------
 // CONFIG
@@ -42,6 +46,11 @@ app.use("/api/auth", googleAuthRoute);
 app.use("/api/admin", adminRoutes);
 app.use("/api/seller", sellerRouter);
 app.use("/api/main-admin", mainAdmin);
+app.use("/api/users", userRoutes); // Use the new user routes
+app.use("/uploads", express.static("uploads"));
+app.use("/api/products", Product);
+app.use("/api/products", productRoutes);
+app.use("/api/orders", orderRoutes); // Use the new order routes
 // Admin routes
    
 

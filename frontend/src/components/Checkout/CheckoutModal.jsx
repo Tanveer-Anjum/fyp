@@ -12,9 +12,13 @@ export default function CheckoutModal({
   const [form, setForm] = useState({
     fullName: "",
     phone: "",
-    address: "",
+    addressLine1: "",
+    addressLine2: "",
     city: "",
-    postalCode: "",
+    state: "",
+    zipCode: "",
+    country: "",
+    paymentMethod: "Cash on Delivery", // Default payment method
     notes: "",
   });
   const [qty, setQty] = useState(Math.max(1, Number(quantity) || 1));
@@ -24,9 +28,13 @@ export default function CheckoutModal({
       setForm({
         fullName: "",
         phone: "",
-        address: "",
+        addressLine1: "",
+        addressLine2: "",
         city: "",
-        postalCode: "",
+        state: "",
+        zipCode: "",
+        country: "",
+        paymentMethod: "Cash on Delivery",
         notes: "",
       });
       setQty(Math.max(1, Number(quantity) || 1));
@@ -35,26 +43,67 @@ export default function CheckoutModal({
 
   if (!open) return null;
 
-  // ✅ Save order
-  const handleSave = (e) => {
+  const handlePlaceOrder = async (e) => {
     e.preventDefault();
-    if (!form.fullName || !form.phone || !form.address || !form.city) {
-      alert("Please fill in required fields: Name, Phone, Address, City.");
-      return;
-    }
-    onSaved?.({ form, product, selectedColor, quantity: qty });
-    alert("Order details saved!");
-  };
 
-  // ✅ Proceed to Pay
-  const handleProceed = (e) => {
-    e.preventDefault();
-    if (!form.fullName || !form.phone || !form.address || !form.city) {
-      alert("Please fill in required fields: Name, Phone, Address, City.");
-      return;
+    const requiredFields = ["fullName", "phone", "addressLine1", "city", "state", "zipCode", "country", "paymentMethod"];
+    for (const field of requiredFields) {
+      if (!form[field]) {
+        alert(`Please fill in the required field: ${field.replace(/([A-Z])/g, ' $1').toLowerCase()}`);
+        return;
+      }
     }
-    onPlaced?.({ form, product, selectedColor, quantity: qty });
-    onClose();
+
+    // Construct order data
+    const orderData = {
+      buyer: "", // This will be filled on the backend from the authenticated user
+      product: {
+        id: product._id,
+        name: product.name,
+        price: product.price,
+        image: product.imageUrl,
+        selectedColor: selectedColor,
+      },
+      quantity: qty,
+      shippingAddress: {
+        fullName: form.fullName,
+        addressLine1: form.addressLine1,
+        addressLine2: form.addressLine2,
+        city: form.city,
+        state: form.state,
+        zipCode: form.zipCode,
+        country: form.country,
+      },
+      paymentMethod: form.paymentMethod,
+      notes: form.notes,
+      seller: product.owner, // Assuming product has an 'owner' field which is the seller's ID
+    };
+
+    // Send order to backend
+    try {
+      const token = localStorage.getItem("authToken");
+      const response = await fetch("http://localhost:8080/api/orders", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${token}`,
+        },
+        body: JSON.stringify(orderData),
+      });
+
+      const data = await response.json();
+
+      if (response.ok) {
+        alert("✅ Order placed successfully!");
+        onPlaced?.(data.order);
+        onClose();
+      } else {
+        alert(`Failed to place order: ${data.message || "Unknown error"}`);
+      }
+    } catch (error) {
+      console.error("Error placing order:", error);
+      alert("An error occurred while placing your order.");
+    }
   };
 
   const unitPrice = product ? Number(product.price) : 0;
@@ -113,14 +162,25 @@ export default function CheckoutModal({
             </div>
             <div>
               <label className="block text-sm font-medium text-gray-700 mb-1">
-                Address
+                Address Line 1
               </label>
-              <textarea
+              <input
+                type="text"
                 className="w-full border rounded-md p-2"
-                rows={3}
-                value={form.address}
-                onChange={(e) => setForm({ ...form, address: e.target.value })}
+                value={form.addressLine1}
+                onChange={(e) => setForm({ ...form, addressLine1: e.target.value })}
                 required
+              />
+            </div>
+            <div>
+              <label className="block text-sm font-medium text-gray-700 mb-1">
+                Address Line 2 (Optional)
+              </label>
+              <input
+                type="text"
+                className="w-full border rounded-md p-2"
+                value={form.addressLine2}
+                onChange={(e) => setForm({ ...form, addressLine2: e.target.value })}
               />
             </div>
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
@@ -138,17 +198,56 @@ export default function CheckoutModal({
               </div>
               <div>
                 <label className="block text-sm font-medium text-gray-700 mb-1">
-                  Postal Code
+                  State
                 </label>
                 <input
                   type="text"
                   className="w-full border rounded-md p-2"
-                  value={form.postalCode}
-                  onChange={(e) =>
-                    setForm({ ...form, postalCode: e.target.value })
-                  }
+                  value={form.state}
+                  onChange={(e) => setForm({ ...form, state: e.target.value })}
+                  required
                 />
               </div>
+            </div>
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+              <div>
+                <label className="block text-sm font-medium text-gray-700 mb-1">
+                  Zip Code
+                </label>
+                <input
+                  type="text"
+                  className="w-full border rounded-md p-2"
+                  value={form.zipCode}
+                  onChange={(e) => setForm({ ...form, zipCode: e.target.value })}
+                  required
+                />
+              </div>
+              <div>
+                <label className="block text-sm font-medium text-gray-700 mb-1">
+                  Country
+                </label>
+                <input
+                  type="text"
+                  className="w-full border rounded-md p-2"
+                  value={form.country}
+                  onChange={(e) => setForm({ ...form, country: e.target.value })}
+                  required
+                />
+              </div>
+            </div>
+            <div>
+              <label className="block text-sm font-medium text-gray-700 mb-1">
+                Payment Method
+              </label>
+              <select
+                className="w-full border rounded-md p-2"
+                value={form.paymentMethod}
+                onChange={(e) => setForm({ ...form, paymentMethod: e.target.value })}
+                required
+              >
+                <option value="Cash on Delivery">Cash on Delivery</option>
+                {/* Add other payment methods as needed */}
+              </select>
             </div>
             <div>
               <label className="block text-sm font-medium text-gray-700 mb-1">
@@ -241,17 +340,10 @@ export default function CheckoutModal({
         <div className="border-t px-5 py-3 flex gap-3 bg-white">
           <button
             type="button"
-            onClick={handleSave}
-            className="w-full md:w-auto bg-gray-200 text-gray-800 px-6 py-3 rounded-lg hover:bg-gray-300 transition"
+            onClick={handlePlaceOrder}
+            className="w-full bg-orange-500 text-white px-6 py-3 rounded-lg hover:bg-orange-600 transition"
           >
-            Save
-          </button>
-          <button
-            type="button"
-            onClick={handleProceed}
-            className="w-full md:w-auto bg-orange-500 text-white px-6 py-3 rounded-lg hover:bg-orange-600 transition"
-          >
-            Proceed to Pay
+            Place Order
           </button>
         </div>
       </div>

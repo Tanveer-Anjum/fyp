@@ -1,12 +1,56 @@
-import React from "react";
+import React, { useState, useEffect } from "react";
 
 export default function OverviewTab() {
-  const stats = [
-    { label: "Total Sales", value: "Rs 2,500,000" },
-    { label: "Orders", value: "1,240" },
-    { label: "Users", value: "320" },
-    { label: "Revenue", value: "Rs 1,850,000" },
-  ];
+  const [stats, setStats] = useState([]);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(null);
+
+  const fetchStats = async () => {
+    const token = localStorage.getItem("authToken");
+    if (!token) {
+      setError("Admin not logged in");
+      setLoading(false);
+      return;
+    }
+
+    try {
+      const res = await fetch("http://localhost:8080/api/admin/dashboard-stats", {
+        headers: {
+          "Content-Type": "application/json",
+          "Authorization": `Bearer ${token}`,
+        },
+      });
+
+      if (!res.ok) {
+        setError("Failed to fetch dashboard stats");
+        setLoading(false);
+        return;
+      }
+
+      const data = await res.json();
+
+      setStats([
+        { label: "Total Sellers", value: data.totalSellers },
+        { label: "Total Buyers", value: data.totalBuyers },
+        { label: "Total Products", value: data.totalProducts },
+        { label: "Total Orders", value: data.totalOrders },
+        { label: "Revenue (PKR)", value: data.totalRevenue.toLocaleString() },
+      ]);
+
+      setLoading(false);
+    } catch (err) {
+      console.error(err);
+      setError("Server error while fetching stats");
+      setLoading(false);
+    }
+  };
+
+  useEffect(() => {
+    fetchStats();
+  }, []);
+
+  if (loading) return <div className="text-center py-8">Loading stats...</div>;
+  if (error) return <div className="text-center py-8 text-red-500">{error}</div>;
 
   return (
     <div>

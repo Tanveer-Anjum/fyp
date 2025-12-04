@@ -22,6 +22,7 @@ import OldCategories from "./components/Categories/OldCategories";
 import NewCategories from "./components/Categories/NewCategories";
 import ProductListingPage from "./components/Categories/ProductListingPage";
 import ReviewPage from "./pages/ReviewPage";
+import SearchResults from "./pages/SearchResults"; // Import SearchResults
 
 function App() {
   return (
@@ -61,7 +62,7 @@ function App() {
               <Route path="/admin/dashboard/*" element={<AdminDashboard />} />
               <Route path="/seller/dashboard/*" element={<SellerDashboard />} />
               <Route path="/review/:id" element={<ReviewPage />} />
-
+              <Route path="/search-results" element={<SearchResults />} /> {/* New route for search results */}
             </Routes>
           </main>
 

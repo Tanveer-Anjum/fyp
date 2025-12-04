@@ -282,15 +282,15 @@ export default function Signup() {
 
     try {
       if (role === "buyer") {
-        const res = await axios.post("http://localhost:8080/api/auth/buyer/signup", {
-          name: formData.name,
+        const res = await axios.post("http://localhost:8080/api/users/signup", { // Changed endpoint
+          fullName: formData.name, // Ensure fullName is sent
           email: formData.email,
           password: formData.password,
-          phone: formData.phone,
+          phoneNumber: formData.phone, // Ensure phoneNumber is sent
         });
         alert(res.data.message);
       } else if (role === "seller") {
-        const res = await axios.post("http://localhost:8080/api/auth/seller/signup", {
+        const res = await axios.post("http://localhost:8080/api/seller/signup", { // Changed endpoint
           fullName: formData.fullName || formData.name,
           phoneNumber: formData.phoneNumber || formData.phone,
           email: formData.email,

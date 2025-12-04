@@ -140,7 +140,12 @@ export default function ShopDetails() {
   // Fetch sellers
   const fetchSellers = async () => {
     try {
-      const res = await fetch("http://localhost:8080/api/admin/sellers");
+      const token = localStorage.getItem("authToken"); // Retrieve token
+      const res = await fetch("http://localhost:8080/api/admin/sellers", {
+        headers: {
+          Authorization: `Bearer ${token}`, // Include token
+        },
+      });
       const data = await res.json();
       if (!data.success) {
         toast.error(data.message || "Failed to fetch shops");
@@ -164,8 +169,12 @@ export default function ShopDetails() {
   const handleDelete = async (id) => {
     if (!window.confirm("Are you sure you want to delete this seller?")) return;
     try {
+      const token = localStorage.getItem("authToken"); // Retrieve token
       const res = await fetch(`http://localhost:8080/api/admin/sellers/${id}`, {
         method: "DELETE",
+        headers: {
+          Authorization: `Bearer ${token}`, // Include token
+        },
       });
       const data = await res.json();
       if (!data.success) return toast.error(data.message || "Delete failed");
@@ -191,9 +200,13 @@ export default function ShopDetails() {
   // Save edits
   const handleSaveEdit = async () => {
     try {
+      const token = localStorage.getItem("authToken"); // Retrieve token
       const res = await fetch(`http://localhost:8080/api/admin/sellers/${editingSeller._id}`, {
         method: "PUT",
-        headers: { "Content-Type": "application/json" },
+        headers: { 
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${token}`, // Include token
+        },
         body: JSON.stringify(editForm),
       });
       const data = await res.json();
@@ -244,12 +257,12 @@ export default function ShopDetails() {
                 <td className="border p-2">{seller.companyName}</td>
                 <td className="border p-2">{new Date(seller.createdAt).toLocaleDateString()}</td>
                 <td className="border p-2 flex gap-2">
-                  <button
+                  {/* <button
                     onClick={() => handleEdit(seller)}
                     className="bg-blue-500 text-white px-2 py-1 rounded hover:bg-blue-600"
                   >
                     Edit
-                  </button>
+                  </button> */}
                   <button
   onClick={() => setDeleteSeller(seller)} // open confirmation modal
   className="bg-red-500 text-white px-2 py-1 rounded hover:bg-red-600"
@@ -282,7 +295,13 @@ export default function ShopDetails() {
         <button
           onClick={async () => {
             try {
-              const res = await fetch(`http://localhost:8080/api/admin/sellers/${deleteSeller._id}`, { method: "DELETE" });
+              const token = localStorage.getItem("authToken"); // Retrieve token for modal delete
+              const res = await fetch(`http://localhost:8080/api/admin/sellers/${deleteSeller._id}`, {
+                method: "DELETE",
+                headers: {
+                  Authorization: `Bearer ${token}`, // Include token for modal delete
+                },
+              });
               const data = await res.json();
               if (!data.success) return toast.error(data.message || "Delete failed");
 

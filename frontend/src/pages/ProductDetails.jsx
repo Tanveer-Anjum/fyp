@@ -1,61 +1,70 @@
 import React, { useState, useEffect } from "react";
 import { useLocation, useParams, useNavigate } from "react-router-dom";
 import { useCart } from "../context/CartContext";
-
-
-import { allProducts } from "../data/products";
 import CheckoutModal from "../components/Checkout/CheckoutModal";
 
 const ProductDetails = () => {
-
   const location = useLocation();
-  const { id } = useParams(); 
+  const { id } = useParams();
   const navigate = useNavigate();
   const { addToCart } = useCart();
 
-
   const [product, setProduct] = useState(location.state?.product || null);
+  const [selectedColor, setSelectedColor] = useState(null);
+  const [quantity, setQuantity] = useState(1);
+  const [isCheckoutOpen, setIsCheckoutOpen] = useState(false);
 
   useEffect(() => {
-   
-    if (!product) {
-      const found = allProducts.find((p) => String(p.id) === id);
-      if (found) setProduct(found);
-      else navigate("/"); 
+    const fetchProductDetails = async () => {
+      try {
+        const response = await fetch(`http://localhost:8080/api/products/${id}`);
+        const data = await response.json();
+        if (data.success) {
+          setProduct(data.product);
+          setSelectedColor(data.product.colors?.[0] || null);
+        } else {
+          navigate("/");
+        }
+      } catch (error) {
+        console.error("Error fetching product details:", error);
+        navigate("/");
+      }
+    };
+
+    if (!product || !product.owner) { // Check if product or product.owner is missing
+      fetchProductDetails();
+    } else {
+      setSelectedColor(product.colors?.[0] || null);
     }
   }, [id, product, navigate]);
 
-  const [selectedColor, setSelectedColor] = useState(
-    product?.colors ? product.colors[0] : null
-  );
-  const [isCheckoutOpen, setIsCheckoutOpen] = useState(false);
-  const [quantity, setQuantity] = useState(1);
+  const handleAddToCart = () => {
+  const token = localStorage.getItem("authToken");
+  if (!token) {
+    // Not logged in, redirect to signin
+    localStorage.setItem("redirectAfterLogin", `/product/${id}`);
+    alert("Please login to add product to cart!");
+    navigate("/signin");
+    return;
+  }
 
-  // const handleAddToCart = () => {
-  //   const safeQty = Math.max(1, Number(quantity) || 1);
-  //   addToCart({ ...product, selectedColor, quantity: safeQty });
-  //   alert("Product added to cart!");
-  // };
-
-
-const handleAddToCart = () => {
   const safeQty = Math.max(1, Number(quantity) || 1);
 
   addToCart({
     ...product,
-    image: product.image, // ensure image exists
     quantity: safeQty,
     selectedColor: selectedColor || null,
+    imageUrl: product.imageUrl
+      ? product.imageUrl.startsWith("http")
+        ? product.imageUrl
+        : `http://localhost:8080${product.imageUrl}`
+      : "/uploads/default-product.jpg",
   });
 
-  alert("Product added to cart!");
+  alert("✅ Product added to cart!");
 };
 
-
-
-
   if (!product) return <p className="text-center mt-20">Loading product...</p>;
-
 
   const numericRating = Number(product.rating ?? 0);
   const fullStars = Math.floor(numericRating);
@@ -64,73 +73,43 @@ const handleAddToCart = () => {
 
   return (
     <div className="p-6 max-w-6xl mx-auto flex flex-col md:flex-row gap-6 md:gap-8">
-      {/* Left: Delivery options */}
-      <aside className="md:w-64 w-full order-3 md:order-1">
-        <div className="bg-white rounded-lg shadow p-4 space-y-4">
-          <h2 className="text-lg font-semibold text-gray-800">Delivery Options</h2>
-          <div className="space-y-3 text-sm text-gray-700">
-            <div className="flex items-start gap-3">
-              <span className="text-green-600">🚚</span>
-              <div>
-                <p className="font-medium">Standard Delivery</p>
-                <p className="text-gray-500">3-7 days across Pakistan</p>
-              </div>
-            </div>
-            <div className="flex items-start gap-3">
-              <span className="text-green-600">💵</span>
-              <div>
-                <p className="font-medium">Cash on Delivery available</p>
-                <p className="text-gray-500">Pay when you receive</p>
-              </div>
-            </div>
-            <div className="flex items-start gap-3">
-              <span className="text-green-600">✔️</span>
-              <div>
-                <p className="font-medium">7-day Return Policy</p>
-                <p className="text-gray-500">Conditions apply</p>
-              </div>
-            </div>
-          </div>
-        </div>
-      </aside>
+      {/* Product Image */}
+      <div className="flex-1">
+     <img
+  src={
+    product.imageUrl
+      ? product.imageUrl.startsWith("http")
+        ? product.imageUrl
+        : `http://localhost:8080${product.imageUrl}`
+      : "/uploads/default-product.jpg"
+  }
+  alt={product.name}
+  className="w-full h-96 object-cover rounded-lg"
+/>
 
-      {/* Center: Product image */}
-      <div className="flex-1 order-1 md:order-2">
-        <img
-          src={product.image}
-          alt={product.name}
-          className="w-full h-96 object-cover rounded-lg"
-        />
       </div>
 
-      {/* Right: Product details */}
-      <div className="flex-1 flex flex-col gap-4 order-2 md:order-3">
+      {/* Product Details */}
+      <div className="flex-1 flex flex-col gap-4">
         <h1 className="text-3xl font-bold text-gray-800">{product.name}</h1>
-        {product.brand && (
-          <p className="text-gray-600 font-medium">Brand: {product.brand}</p>
-        )}
-        {Number.isFinite(numericRating) && numericRating > 0 && (
-          <div className="flex items-center gap-2">
-            <div className="text-yellow-500 text-lg">
-              {Array.from({ length: fullStars }).map((_, i) => (
-                <span key={`full-${i}`}>★</span>
-              ))}
-              {hasHalf && <span>☆</span>}
-              {Array.from({ length: emptyStars }).map((_, i) => (
-                <span key={`empty-${i}`}>☆</span>
-              ))}
-            </div>
-            <span className="text-sm text-gray-600">{numericRating.toFixed(1)} / 5</span>
+        {product.brand && <p className="text-gray-600 font-medium">Brand: {product.brand}</p>}
+        {numericRating > 0 && (
+          <div className="flex items-center gap-2 text-yellow-500 text-lg">
+            {Array.from({ length: fullStars }).map((_, i) => (
+              <span key={`full-${i}`}>★</span>
+            ))}
+            {hasHalf && <span>☆</span>}
+            {Array.from({ length: emptyStars }).map((_, i) => (
+              <span key={`empty-${i}`}>☆</span>
+            ))}
+            <span className="text-sm text-gray-600 ml-2">{numericRating.toFixed(1)} / 5</span>
           </div>
         )}
         <p className="text-2xl font-bold text-green-600">
           Rs {Number(product.price).toLocaleString()}
         </p>
         {product.description && (
-          <div className="prose max-w-none">
-            <h3 className="text-lg font-semibold text-gray-800">Description</h3>
-            <p className="text-gray-700 whitespace-pre-line leading-7">{product.description}</p>
-          </div>
+          <p className="text-gray-700 whitespace-pre-line">{product.description}</p>
         )}
 
         {product.colors && (
@@ -150,17 +129,34 @@ const handleAddToCart = () => {
           </div>
         )}
 
-        {/* Quantity Selector */}
-        <div className="flex items-center gap-4">
+        <div className="flex items-center gap-4 mt-2">
           <span className="font-semibold">Quantity:</span>
           <div className="inline-flex items-center border rounded-lg overflow-hidden">
-            <button type="button" onClick={() => setQuantity((q) => Math.max(1, Number(q || 1) - 1))} className="px-3 py-2 bg-gray-100 hover:bg-gray-200">-</button>
-            <input type="number" min={1} value={quantity} onChange={(e) => setQuantity(Math.max(1, Number(e.target.value) || 1))} className="w-16 text-center outline-none py-2" />
-            <button type="button" onClick={() => setQuantity((q) => Math.max(1, Number(q || 1) + 1))} className="px-3 py-2 bg-gray-100 hover:bg-gray-200">+</button>
+            <button
+              type="button"
+              onClick={() => setQuantity((q) => Math.max(1, Number(q || 1) - 1))}
+              className="px-3 py-2 bg-gray-100 hover:bg-gray-200"
+            >
+              -
+            </button>
+            <input
+              type="number"
+              min={1}
+              value={quantity}
+              onChange={(e) => setQuantity(Math.max(1, Number(e.target.value) || 1))}
+              className="w-16 text-center outline-none py-2"
+            />
+            <button
+              type="button"
+              onClick={() => setQuantity((q) => Math.max(1, Number(q || 1) + 1))}
+              className="px-3 py-2 bg-gray-100 hover:bg-gray-200"
+            >
+              +
+            </button>
           </div>
         </div>
 
-        <div className="flex gap-4 mt-2">
+        <div className="flex gap-4 mt-4">
           <button
             onClick={handleAddToCart}
             className="bg-green-600 text-white px-6 py-3 rounded-lg hover:bg-green-700 transition"

@@ -153,7 +153,12 @@ export default function UsersTab() {
   // Fetch users
   const fetchUsers = async () => {
     try {
-      const res = await fetch("http://localhost:8080/api/admin/all-users");
+      const token = localStorage.getItem("authToken"); // Retrieve token
+      const res = await fetch("http://localhost:8080/api/admin/all-users", {
+        headers: {
+          Authorization: `Bearer ${token}`, // Include token
+        },
+      });
       const data = await res.json();
 
       if (!data.success) {
@@ -176,8 +181,12 @@ export default function UsersTab() {
     if (!deleteModal.user) return;
 
     try {
+      const token = localStorage.getItem("authToken"); // Retrieve token
       const res = await fetch(`http://localhost:8080/api/admin/users/${deleteModal.user._id}`, {
         method: "DELETE",
+        headers: {
+          Authorization: `Bearer ${token}`, // Include token
+        },
       });
       const data = await res.json();
 
