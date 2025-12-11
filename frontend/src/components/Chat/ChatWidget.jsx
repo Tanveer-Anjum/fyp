@@ -10,7 +10,7 @@ export default function ChatWidget() {
       {/* Floating button */}
       <button
         onClick={() => setIsOpen(!isOpen)}
-        className="bg-green-600 text-white p-4 rounded-full shadow-lg hover:bg-green-700 transition"
+        className="bg-gradient-to-r from-purple-600 to-indigo-700 text-white p-4 rounded-full shadow-lg hover:from-purple-700 hover:to-indigo-800 transition-all duration-300 transform hover:scale-110"
       >
         <FaComments size={24} />
       </button>

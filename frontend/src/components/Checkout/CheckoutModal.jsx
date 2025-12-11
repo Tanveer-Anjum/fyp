@@ -67,6 +67,7 @@ export default function CheckoutModal({
       quantity: qty,
       shippingAddress: {
         fullName: form.fullName,
+        phone: form.phone, 
         addressLine1: form.addressLine1,
         addressLine2: form.addressLine2,
         city: form.city,
@@ -350,3 +351,13 @@ export default function CheckoutModal({
     </div>
   );
 }
+
+
+
+
+
+
+
+
+
+

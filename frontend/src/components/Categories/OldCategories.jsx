@@ -196,29 +196,39 @@ export default function OldCategories() {
     : products;
 
   return (
-    <div className="p-6">
-      <h2 className="text-2xl font-bold mb-4">Old Categories</h2>
-
-      <div className="grid grid-cols-2 sm:grid-cols-4 gap-3 mb-4">
+    <div className="container mx-auto px-4 py-8 bg-white shadow-lg rounded-xl mt-8">
+      {/* Category Filter Buttons */}
+      <div className="flex flex-wrap justify-center gap-3 mb-8">
+        {categories.length > 0 && (
+          <button
+            className={`px-6 py-2 rounded-full font-medium transition-all duration-300 ease-in-out
+              ${selectedCategory === "" ? "bg-indigo-600 text-white shadow-md" : "bg-gray-200 text-gray-700 hover:bg-gray-300"}
+            `}
+            onClick={() => setSelectedCategory("")}
+          >
+            All
+          </button>
+        )}
         {categories.map((cat) => (
           <button
             key={cat}
-            className={`px-3 py-2 rounded ${
-              selectedCategory === cat ? "bg-green-500 text-white" : "bg-gray-100 hover:bg-gray-200"
+            className={`px-6 py-2 rounded-full font-medium transition-all duration-300 ease-in-out
+              ${selectedCategory === cat ? "bg-indigo-600 text-white shadow-md" : "bg-gray-200 text-gray-700 hover:bg-gray-300"}
             }`}
-            onClick={() => setSelectedCategory(cat === selectedCategory ? "" : cat)}
+            onClick={() => setSelectedCategory(cat)}
           >
             {cat}
           </button>
         ))}
       </div>
 
-      <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-4">
+      {/* Product Grid */}
+      <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-6">
         {loading
-          ? Array(8).fill(0).map((_, i) => <ProductCardSkeleton key={i} />)
-          : filteredProducts.length
+          ? Array(10).fill(0).map((_, i) => <ProductCardSkeleton key={i} />)
+          : filteredProducts.length > 0
           ? filteredProducts.map((p) => <ProductCard key={p._id} product={p} />)
-          : <p className="col-span-4 text-center text-gray-500">No products found.</p>}
+          : <p className="col-span-full text-center text-gray-500 text-lg py-10">No products found in this category.</p>}
       </div>
     </div>
   );

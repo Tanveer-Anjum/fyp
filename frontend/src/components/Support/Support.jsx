@@ -3,9 +3,41 @@ import { AiOutlineClose } from "react-icons/ai";
 import { useNavigate } from "react-router-dom";
 import QuickHelp from "./QuickHelp";
 import ContactForm from "./ContactForm";
+import toast from "react-hot-toast";
+
 
 const Support = () => {
   const navigate = useNavigate();
+
+
+  const handleTicketSubmit = async (e) => {
+  e.preventDefault();
+  const form = e.target;
+
+  const data = {
+    name: form.name.value,
+    email: form.email.value,
+    issueType: form.issueType.value,
+    description: form.description.value,
+  };
+
+  try {
+    const res = await fetch("http://localhost:8080/api/support/submit", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify(data),
+    });
+
+    const result = await res.json();
+    if (!result.success) return toast.error(result.message);
+    toast.success("Ticket submitted successfully!");
+    form.reset();
+  } catch (err) {
+    console.error(err);
+    toast.error("Failed to submit ticket");
+  }
+};
+
 
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center p-4">
@@ -58,53 +90,64 @@ const Support = () => {
           {/* Ticket Form */}
           <div className="bg-white/60 backdrop-blur-sm rounded-xl p-4 border border-white/30">
             <h3 className="text-xl font-semibold text-gray-700 mb-3 drop-shadow-sm">Submit a Ticket</h3>
-            <form className="space-y-4">
-              <div>
-                <label className="block text-sm font-medium text-gray-700 mb-1">Your Name</label>
-                <input
-                  type="text"
-                  placeholder="Enter your full name"
-                  className="w-full bg-white/80 backdrop-blur-sm border border-white/50 rounded-lg px-3 py-2 text-sm focus:ring-1 focus:ring-green-500 focus:border-transparent transition-all duration-200"
-                />
-              </div>
-              
-              <div>
-                <label className="block text-sm font-medium text-gray-700 mb-1">Your Email</label>
-                <input
-                  type="email"
-                  placeholder="your@email.com"
-                  className="w-full bg-white/80 backdrop-blur-sm border border-white/50 rounded-lg px-3 py-2 text-sm focus:ring-1 focus:ring-green-500 focus:border-transparent transition-all duration-200"
-                />
-              </div>
-              
-              <div>
-                <label className="block text-sm font-medium text-gray-700 mb-1">Issue Type</label>
-                <select className="w-full bg-white/80 backdrop-blur-sm border border-white/50 rounded-lg px-3 py-2 text-sm focus:ring-1 focus:ring-green-500 focus:border-transparent transition-all duration-200">
-                  <option value="">Select issue type</option>
-                  <option value="technical">Technical Issue</option>
-                  <option value="billing">Billing Problem</option>
-                  <option value="order">Order Related</option>
-                  <option value="account">Account Issue</option>
-                  <option value="other">Other</option>
-                </select>
-              </div>
-              
-              <div>
-                <label className="block text-sm font-medium text-gray-700 mb-1">Description</label>
-                <textarea
-                  placeholder="Please describe your issue in detail..."
-                  rows="4"
-                  className="w-full bg-white/80 backdrop-blur-sm border border-white/50 rounded-lg px-3 py-2 text-sm focus:ring-1 focus:ring-green-500 focus:border-transparent transition-all duration-200 resize-none"
-                />
-              </div>
-              
-              <button 
-                type="submit"
-                className="w-full bg-gradient-to-r from-green-500 to-green-600 text-white py-2.5 rounded-lg font-medium hover:from-green-600 hover:to-green-700 transition-all duration-300 shadow-lg hover:shadow-xl"
-              >
-                Submit Ticket
-              </button>
-            </form>
+          <form className="space-y-4" onSubmit={handleTicketSubmit}>
+  <div>
+    <label className="block text-sm font-medium text-gray-700 mb-1">Your Name</label>
+    <input
+      type="text"
+      name="name"
+      placeholder="Enter your full name"
+      className="w-full bg-white/80 backdrop-blur-sm border border-white/50 rounded-lg px-3 py-2 text-sm focus:ring-1 focus:ring-green-500 focus:border-transparent transition-all duration-200"
+      required
+    />
+  </div>
+  
+  <div>
+    <label className="block text-sm font-medium text-gray-700 mb-1">Your Email</label>
+    <input
+      type="email"
+      name="email"
+      placeholder="your@email.com"
+      className="w-full bg-white/80 backdrop-blur-sm border border-white/50 rounded-lg px-3 py-2 text-sm focus:ring-1 focus:ring-green-500 focus:border-transparent transition-all duration-200"
+      required
+    />
+  </div>
+  
+  <div>
+    <label className="block text-sm font-medium text-gray-700 mb-1">Issue Type</label>
+    <select
+      name="issueType"
+      className="w-full bg-white/80 backdrop-blur-sm border border-white/50 rounded-lg px-3 py-2 text-sm focus:ring-1 focus:ring-green-500 focus:border-transparent transition-all duration-200"
+      required
+    >
+      <option value="">Select issue type</option>
+      <option value="technical">Technical Issue</option>
+      <option value="billing">Billing Problem</option>
+      <option value="order">Order Related</option>
+      <option value="account">Account Issue</option>
+      <option value="other">Other</option>
+    </select>
+  </div>
+  
+  <div>
+    <label className="block text-sm font-medium text-gray-700 mb-1">Description</label>
+    <textarea
+      name="description"
+      placeholder="Please describe your issue in detail..."
+      rows="4"
+      className="w-full bg-white/80 backdrop-blur-sm border border-white/50 rounded-lg px-3 py-2 text-sm focus:ring-1 focus:ring-green-500 focus:border-transparent transition-all duration-200 resize-none"
+      required
+    />
+  </div>
+  
+  <button
+    type="submit"
+    className="w-full bg-green-600 text-white py-2 rounded-lg hover:bg-green-700 transition-all duration-200"
+  >
+    Submit Ticket
+  </button>
+</form>
+
           </div>
 
           {/* Quick Help Section */}
