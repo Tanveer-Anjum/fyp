@@ -332,77 +332,77 @@ export default function SellersTab() {
     );
 
   return (
-    <div className="bg-white p-4 md:p-6 shadow rounded-lg overflow-x-auto">
-      <h2 className="text-2xl font-bold mb-4 text-gray-800">Registered Seller</h2>
-      <table className="min-w-full border-collapse border border-gray-300">
+    <div className="bg-gray-800 p-6 md:p-8 shadow-xl rounded-lg overflow-x-auto text-gray-100">
+      <h2 className="text-3xl font-bold mb-6 text-blue-400">Registered Seller</h2>
+      <table className="min-w-full border-collapse border border-gray-700 bg-gray-900 rounded-lg">
         <thead>
-          <tr className="bg-gray-200">
-            <th className="border p-2 text-left">Name</th>
-            <th className="border p-2 text-left">Email</th>
-            <th className="border p-2 text-left">Phone</th>
-            <th className="border p-2 text-left">Shop Name</th>
-            <th className="border p-2 text-left">Business Type</th>
-            <th className="border p-2 text-left">Actions</th>
+          <tr className="bg-gray-700">
+            <th className="border border-gray-700 p-3 text-left text-blue-300">Name</th>
+            <th className="border border-gray-700 p-3 text-left text-blue-300">Email</th>
+            <th className="border border-gray-700 p-3 text-left text-blue-300">Phone</th>
+            <th className="border border-gray-700 p-3 text-left text-blue-300">Shop Name</th>
+            <th className="border border-gray-700 p-3 text-left text-blue-300">Business Type</th>
+            <th className="border border-gray-700 p-3 text-left text-blue-300">Actions</th>
           </tr>
         </thead>
         <tbody>
-          <tr className="border">
-            <td className="border p-2">
+          <tr className="border-b border-gray-700 hover:bg-gray-700 transition-colors duration-200">
+            <td className="border border-gray-700 p-3">
               {editMode ? (
                 <input
                   name="fullName"
                   value={editForm.fullName}
                   onChange={handleEditChange}
-                  className="border rounded p-1 w-full"
+                  className="bg-gray-800 border border-gray-600 rounded-md p-2 w-full text-gray-100 focus:ring-2 focus:ring-blue-500 outline-none"
                 />
               ) : (
                 seller.fullName
               )}
             </td>
-            <td className="border p-2 break-words">{seller.email}</td>
-            <td className="border p-2">
+            <td className="border border-gray-700 p-3 break-words">{seller.email}</td>
+            <td className="border border-gray-700 p-3">
               {editMode ? (
                 <input
                   name="phoneNumber"
                   value={editForm.phoneNumber}
                   onChange={handleEditChange}
-                  className="border rounded p-1 w-full"
+                  className="bg-gray-800 border border-gray-600 rounded-md p-2 w-full text-gray-100 focus:ring-2 focus:ring-blue-500 outline-none"
                 />
               ) : (
                 seller.phoneNumber
               )}
             </td>
-            <td className="border p-2">
+            <td className="border border-gray-700 p-3">
               {editMode ? (
                 <input
                   name="shopName"
                   value={editForm.shopName}
                   onChange={handleEditChange}
-                  className="border rounded p-1 w-full"
+                  className="bg-gray-800 border border-gray-600 rounded-md p-2 w-full text-gray-100 focus:ring-2 focus:ring-blue-500 outline-none"
                 />
               ) : (
                 seller.shopName
               )}
             </td>
-            <td className="border p-2">
+            <td className="border border-gray-700 p-3">
               {editMode ? (
                 <input
                   name="businessType"
                   value={editForm.businessType}
                   onChange={handleEditChange}
-                  className="border rounded p-1 w-full"
+                  className="bg-gray-800 border border-gray-600 rounded-md p-2 w-full text-gray-100 focus:ring-2 focus:ring-blue-500 outline-none"
                 />
               ) : (
                 seller.businessType
               )}
             </td>
-            <td className="border p-2 flex flex-col md:flex-row gap-2">
+            <td className="border border-gray-700 p-3 flex flex-col md:flex-row gap-2">
               <button
                 onClick={editMode ? handleEditSubmit : () => setEditMode(true)}
                 disabled={actionLoading}
-                className={`px-3 py-1 rounded text-white ${
-                  editMode ? "bg-green-500" : "bg-blue-500"
-                } ${actionLoading ? "opacity-50 cursor-not-allowed" : ""}`}
+                className={`px-4 py-2 rounded-md text-white font-semibold transition-colors duration-200 \
+                  ${editMode ? "bg-green-600 hover:bg-green-700" : "bg-blue-600 hover:bg-blue-700"}\
+                  ${actionLoading ? "opacity-50 cursor-not-allowed" : ""}`}
               >
                 {editMode ? (actionLoading ? "Saving..." : "Save") : "Edit"}
               </button>

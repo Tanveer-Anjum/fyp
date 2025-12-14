@@ -210,34 +210,36 @@ export default function UsersTab() {
     fetchUsers();
   }, []);
 
-  if (loading) return <p className="text-gray-600">Loading users...</p>;
+  if (loading) return <p className="text-center py-8 text-indigo-600 text-lg font-medium">Loading users...</p>;
 
   return (
-    <div>
-      <h2 className="text-2xl font-bold mb-6 text-gray-800">Users</h2>
+    <div className="bg-white dark:bg-gray-800 rounded-lg p-6 shadow-md">
+      <h2 className="text-3xl font-bold mb-8 text-gray-900 dark:text-white border-b pb-4 border-gray-200 dark:border-gray-700">
+        Manage Users
+      </h2>
 
-      <div className="bg-white shadow rounded-lg p-4 overflow-x-auto">
-        <table className="w-full border-collapse text-sm">
-          <thead>
-            <tr className="bg-gray-100 text-left text-gray-700">
-              <th className="p-3">ID</th>
-              <th className="p-3">Name</th>
-              <th className="p-3">Email</th>
-              <th className="p-3">Role</th>
-              <th className="p-3">Actions</th>
+      <div className="overflow-x-auto bg-white dark:bg-gray-800 shadow rounded-lg border border-gray-200 dark:border-gray-700">
+        <table className="min-w-full divide-y divide-gray-200 dark:divide-gray-700">
+          <thead className="bg-gray-100 dark:bg-gray-700">
+            <tr>
+              <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-300 uppercase tracking-wider">ID</th>
+              <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-300 uppercase tracking-wider">Name</th>
+              <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-300 uppercase tracking-wider">Email</th>
+              <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-300 uppercase tracking-wider">Role</th>
+              <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-300 uppercase tracking-wider">Actions</th>
             </tr>
           </thead>
-          <tbody>
+          <tbody className="divide-y divide-gray-200 dark:divide-gray-700">
             {users.map((u) => (
-              <tr key={u._id} className="border-t hover:bg-gray-50">
-                <td className="p-3">{u._id}</td>
-                <td className="p-3">{u.name}</td>
-                <td className="p-3">{u.email}</td>
-                <td className="p-3">{u.role}</td>
-                <td className="p-3">
+              <tr key={u._id} className="hover:bg-gray-50 dark:hover:bg-gray-700 transition-colors duration-150">
+                <td className="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900 dark:text-white">{u._id}</td>
+                <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-700 dark:text-gray-300">{u.fullName || u.name || "N/A"}</td>
+                <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-700 dark:text-gray-300">{u.email}</td>
+                <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-700 dark:text-gray-300">{u.role}</td>
+                <td className="px-6 py-4 whitespace-nowrap text-left text-sm font-medium">
                   <button
                     onClick={() => setDeleteModal({ open: true, user: u })}
-                    className="px-3 py-1 bg-red-500 text-white rounded hover:bg-red-600 transition"
+                    className="text-red-600 hover:text-red-900 dark:text-red-400 dark:hover:text-red-300 transition-colors duration-200"
                   >
                     Delete
                   </button>
@@ -250,22 +252,23 @@ export default function UsersTab() {
 
       {/* Delete Confirmation Modal */}
       {deleteModal.open && (
-        <div className="fixed inset-0  bg-opacity-40 flex items-center justify-center z-50">
-          <div className="bg-white rounded-lg shadow-lg p-6 w-96">
-            <h3 className="text-xl font-semibold mb-4 text-gray-800">Confirm Deletion</h3>
-            <p className="mb-6 text-gray-700">
-              Are you sure you want to delete <strong>{deleteModal.user.name}</strong>?
+        <div className="fixed inset-0 bg-gray-900 bg-opacity-75 flex items-center justify-center z-50 p-4">
+          <div className="bg-white dark:bg-gray-700 rounded-lg shadow-xl p-8 w-full max-w-sm transform scale-100 animate-fade-in-up duration-300">
+            <h3 className="text-2xl font-bold mb-4 text-gray-900 dark:text-white">Confirm Deletion</h3>
+            <p className="mb-6 text-gray-700 dark:text-gray-300">
+              Are you sure you want to delete <strong>{deleteModal.user.fullName || deleteModal.user.name || "this user"}</strong>?
+              This action cannot be undone.
             </p>
-            <div className="flex justify-end gap-4">
+            <div className="flex justify-end gap-3">
               <button
                 onClick={() => setDeleteModal({ open: false, user: null })}
-                className="px-4 py-2 bg-gray-300 rounded hover:bg-gray-400 transition"
+                className="px-5 py-2 bg-gray-300 dark:bg-gray-600 text-gray-800 dark:text-white rounded-lg hover:bg-gray-400 dark:hover:bg-gray-500 transition-colors duration-200"
               >
                 Cancel
               </button>
               <button
                 onClick={handleDelete}
-                className="px-4 py-2 bg-red-500 text-white rounded hover:bg-red-600 transition"
+                className="px-5 py-2 bg-red-600 text-white rounded-lg hover:bg-red-700 transition-colors duration-200"
               >
                 Delete
               </button>

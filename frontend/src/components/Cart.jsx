@@ -90,16 +90,38 @@
 
 
 
-import React from "react";
+import React, { useState } from "react";
 import { useCart } from "../context/CartContext";
+import CheckoutModal from "../components/Checkout/CheckoutModal";
 
 const Cart = () => {
   const { cart, removeFromCart, clearCart } = useCart();
+  const [showCheckoutModal, setShowCheckoutModal] = useState(false);
+  const [selectedItemsForCheckout, setSelectedItemsForCheckout] = useState([]);
+  const [totalAmountForCheckout, setTotalAmountForCheckout] = useState(0);
 
   const total = cart.reduce(
     (sum, item) => sum + Number(item.price) * item.quantity,
     0
   );
+
+  const handleBuyNow = (item) => {
+    setSelectedItemsForCheckout([item]);
+    setTotalAmountForCheckout(Number(item.price) * item.quantity);
+    setShowCheckoutModal(true);
+  };
+
+  const handleBuyAll = () => {
+    setSelectedItemsForCheckout(cart);
+    setTotalAmountForCheckout(total);
+    setShowCheckoutModal(true);
+  };
+
+  const handleCloseCheckoutModal = () => {
+    setShowCheckoutModal(false);
+    setSelectedItemsForCheckout([]);
+    setTotalAmountForCheckout(0);
+  };
 
   return (
     <div className="p-6 max-w-3xl mx-auto">
@@ -135,12 +157,20 @@ const Cart = () => {
                   </div>
                 </div>
 
-                <button
-                  onClick={() => removeFromCart(item.id)}
-                  className="text-red-500 hover:text-red-700"
-                >
-                  Remove
-                </button>
+                <div className="flex items-center space-x-2">
+                  <button
+                    onClick={() => handleBuyNow(item)}
+                    className="bg-green-500 text-white px-3 py-1 rounded-md hover:bg-green-600 transition-colors duration-200 text-sm"
+                  >
+                    Buy Now
+                  </button>
+                  <button
+                    onClick={() => removeFromCart(item.id)}
+                    className="text-red-500 hover:text-red-700 text-sm"
+                  >
+                    Remove
+                  </button>
+                </div>
               </div>
             ))}
           </div>
@@ -150,15 +180,30 @@ const Cart = () => {
               Total: Rs {total.toLocaleString()}
             </p>
 
-            <button
-              onClick={clearCart}
-              className="bg-red-500 px-4 py-2 text-white rounded hover:bg-red-600"
-            >
-              Clear Cart
-            </button>
+            <div className="flex space-x-4">
+              <button
+                onClick={handleBuyAll}
+                className="bg-indigo-600 px-4 py-2 text-white rounded-md hover:bg-indigo-700 transition-colors duration-200"
+              >
+                Buy All
+              </button>
+              <button
+                onClick={clearCart}
+                className="bg-red-500 px-4 py-2 text-white rounded-md hover:bg-red-600 transition-colors duration-200"
+              >
+                Clear Cart
+              </button>
+            </div>
           </div>
         </>
       )}
+
+      <CheckoutModal
+        show={showCheckoutModal}
+        onClose={handleCloseCheckoutModal}
+        selectedItems={selectedItemsForCheckout}
+        totalAmount={totalAmountForCheckout}
+      />
     </div>
   );
 };

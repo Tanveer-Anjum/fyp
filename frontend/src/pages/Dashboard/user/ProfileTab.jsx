@@ -1,111 +1,6 @@
-// import React, { useEffect, useState } from "react";
-// import { getUser } from "../../../utils/auth"; // your auth helper
-
-// const ProfileTab = () => {
-//   const [user, setUser] = useState({ name: "", email: "", phone: "" });
-
-//   useEffect(() => {
-//     const loggedInUser = getUser();
-//     if (loggedInUser) {
-//       setUser({
-//         name: loggedInUser.name || "",
-//         email: loggedInUser.email || "",
-
-//       });
-//     }
-//   }, []);
-
-//   return (
-//     <div className="bg-white shadow rounded-lg p-6">
-//       <h2 className="text-2xl font-bold mb-4 text-gray-800"><span>{user.name}</span></h2>
-//       <p>
-//         <span className="font-semibold">Name:</span> {user.name}
-//       </p>
-//       <p>
-//         <span className="font-semibold">Email:</span> {user.email}
-//       </p>
-    
-//       <button className="mt-4 bg-green-600 text-white px-4 py-2 rounded hover:bg-green-700">
-//         Edit Profile
-//       </button>
-//     </div>
-//   );
-// };
-
-// export default ProfileTab;
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-// import React, { useEffect, useState } from "react";
-// import { getUser } from "../../../utils/auth";
-
-// const ProfileTab = () => {
-//   const [user, setUser] = useState({ name: "", email: "" });
-
-//   useEffect(() => {
-//     const loggedInUser = getUser();
-//     if (loggedInUser) {
-//       setUser({
-//         name: loggedInUser.name || "",
-//         email: loggedInUser.email || "",
-//       });
-//     }
-//   }, []);
-
-//   return (
-//     <div className="bg-white shadow rounded-lg p-6">
-//       <h2 className="text-2xl font-bold mb-4 text-gray-800">
-//         <span>{user.name}</span>
-//       </h2>
-
-//       <p>
-//         <span className="font-semibold">Name:</span> {user.name}
-//       </p>
-//       <p>
-//         <span className="font-semibold">Email:</span> {user.email}
-//       </p>
-
-//       <button className="mt-4 bg-green-600 text-white px-4 py-2 rounded hover:bg-green-700">
-//         Edit Profile
-//       </button>
-//     </div>
-//   );
-// };
-
-// export default ProfileTab;
-
-
-
-
-
-
-
-
-
-
-
 import React, { useEffect, useState } from "react";
 import { getUser, saveUser } from "../../../utils/auth";
+import toast from "react-hot-toast"; // Import toast
 
 const ProfileTab = () => {
   const [user, setUser] = useState({ fullName: "", email: "" });
@@ -138,89 +33,83 @@ const ProfileTab = () => {
 
       const data = await res.json();
       if (!data.success) {
-        alert(data.message || "Failed to update profile");
+        toast.error(data.message || "Failed to update profile"); // Replaced alert
         return;
       }
 
       setUser(data.user);
       saveUser(data.user); // Update localStorage
       setEditMode(false);
-      alert("Profile updated successfully!");
+      toast.success("Profile updated successfully!"); // Replaced alert
     } catch (err) {
       console.error(err);
-      alert("Something went wrong!");
+      toast.error("Something went wrong while updating profile!"); // Replaced alert
     }
   };
 
   return (
-    <div className="bg-white shadow rounded-lg p-6 max-w-md mx-auto">
-      <h2 className="text-2xl font-bold mb-4 text-gray-800">
-        {editMode ? (
-          <input
-            type="text"
-            name="fullName"
-            value={formData.fullName}
-            onChange={handleChange}
-            className="border px-2 py-1 rounded w-full"
-          />
-        ) : (
-          user.fullName
-        )}
+    <div className="bg-white dark:bg-gray-800 rounded-lg shadow-md p-8 max-w-lg mx-auto border border-gray-200 dark:border-gray-700">
+      <h2 className="text-3xl font-bold mb-6 text-gray-900 dark:text-white border-b pb-4 border-gray-200 dark:border-gray-700">
+        My Profile
       </h2>
 
-      <p className="mb-2">
-        <span className="font-semibold">Name:</span>{" "}
-        {editMode ? (
-          <input
-            type="text"
-            name="fullName"
-            value={formData.fullName}
-            onChange={handleChange}
-            className="border px-2 py-1 rounded w-full"
-          />
-        ) : (
-          user.fullName
-        )}
-      </p>
-
-      <p className="mb-4">
-        <span className="font-semibold">Email:</span>{" "}
-        {editMode ? (
-          <input
-            type="email"
-            name="email"
-            value={formData.email}
-            onChange={handleChange}
-            className="border px-2 py-1 rounded w-full"
-          />
-        ) : (
-          user.email
-        )}
-      </p>
-
-      {editMode ? (
-        <div className="flex gap-2">
-          <button
-            onClick={handleSave}
-            className="bg-green-600 text-white px-4 py-2 rounded hover:bg-green-700"
-          >
-            Save
-          </button>
-          <button
-            onClick={() => setEditMode(false)}
-            className="bg-gray-400 text-white px-4 py-2 rounded hover:bg-gray-500"
-          >
-            Cancel
-          </button>
+      <div className="space-y-5">
+        <div>
+          <p className="text-lg font-semibold text-gray-700 dark:text-gray-300 mb-1">Full Name:</p>
+          {editMode ? (
+            <input
+              type="text"
+              name="fullName"
+              value={formData.fullName}
+              onChange={handleChange}
+              className="w-full px-4 py-2 border border-gray-300 dark:border-gray-600 rounded-lg shadow-sm focus:ring-indigo-500 focus:border-indigo-500 bg-gray-50 dark:bg-gray-700 text-gray-900 dark:text-white transition-colors duration-200"
+            />
+          ) : (
+            <p className="text-gray-800 dark:text-gray-200 text-base">{user.fullName}</p>
+          )}
         </div>
-      ) : (
-        <button
-          onClick={() => setEditMode(true)}
-          className="bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-700"
-        >
-          Edit Profile
-        </button>
-      )}
+
+        <div>
+          <p className="text-lg font-semibold text-gray-700 dark:text-gray-300 mb-1">Email Address:</p>
+          {editMode ? (
+            <input
+              type="email"
+              name="email"
+              value={formData.email}
+              onChange={handleChange}
+              className="w-full px-4 py-2 border border-gray-300 dark:border-gray-600 rounded-lg shadow-sm focus:ring-indigo-500 focus:border-indigo-500 bg-gray-50 dark:bg-gray-700 text-gray-900 dark:text-white transition-colors duration-200"
+            />
+          ) : (
+            <p className="text-gray-800 dark:text-gray-200 text-base">{user.email}</p>
+          )}
+        </div>
+      </div>
+
+      <div className="mt-8 flex gap-4">
+        {editMode ? (
+          <>
+            <button
+              onClick={handleSave}
+              className="flex-1 bg-green-600 text-white px-6 py-3 rounded-lg hover:bg-green-700 transition-colors duration-200 shadow-md font-semibold text-lg"
+            >
+              Save Changes
+            </button>
+            <button
+              onClick={() => setEditMode(false)}
+              className="flex-1 bg-gray-400 text-white px-6 py-3 rounded-lg hover:bg-gray-500 transition-colors duration-200 shadow-md font-semibold text-lg"
+            >
+              Cancel
+            </button>
+          </>
+        ) : (
+          <button
+            onClick={() => setEditMode(true)}
+            className="flex-1 bg-indigo-600 text-white px-6 py-3 rounded-lg hover:bg-indigo-700 transition-colors duration-200 shadow-md font-semibold text-lg"
+          >
+            Edit Profile
+          </button>
+        )}
+      </div>
     </div>
   );
 };

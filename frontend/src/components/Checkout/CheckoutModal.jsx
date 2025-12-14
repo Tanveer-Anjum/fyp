@@ -67,6 +67,7 @@ export default function CheckoutModal({
       quantity: qty,
       shippingAddress: {
         fullName: form.fullName,
+        phone: form.phone, 
         addressLine1: form.addressLine1,
         addressLine2: form.addressLine2,
         city: form.city,
@@ -112,18 +113,18 @@ export default function CheckoutModal({
   const total = subTotal + delivery;
 
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center">
+    <div className="fixed inset-0 z-50 flex items-center justify-center p-4">
       {/* Background overlay */}
-      <div className="absolute inset-0 bg-black/50" onClick={onClose} />
+      <div className="absolute inset-0 bg-black/70 backdrop-blur-sm" onClick={onClose} />
 
-      {/* Modal container */}
-      <div className="relative bg-white w-11/12 md:w-4/5 lg:w-3/4 max-h-[90vh] rounded-lg shadow-xl flex flex-col">
+      {/* Modal container - Dark Theme */}
+      <div className="relative bg-gray-900 w-11/12 md:w-4/5 lg:w-3/4 max-h-[90vh] rounded-lg shadow-2xl flex flex-col border border-gray-700 text-gray-100">
         
         {/* Header */}
-        <div className="flex justify-between items-center px-5 py-3 border-b">
-          <h3 className="text-lg font-semibold">Checkout</h3>
+        <div className="flex justify-between items-center px-5 py-3 border-b border-gray-700 bg-gray-800">
+          <h3 className="text-xl font-semibold text-blue-400">Checkout</h3>
           <button
-            className="text-gray-500 hover:text-gray-700"
+            className="text-gray-400 hover:text-blue-400 p-2 rounded-full transition-colors duration-200"
             onClick={onClose}
           >
             ✕
@@ -134,26 +135,26 @@ export default function CheckoutModal({
         <div className="flex-1 overflow-auto flex flex-col md:flex-row">
           
           {/* Left: Contact & Address */}
-          <form className="flex-1 p-5 space-y-4">
+          <form className="flex-1 p-5 space-y-4 bg-gray-800">
             <div>
-              <label className="block text-sm font-medium text-gray-700 mb-1">
+              <label className="block text-sm font-medium text-gray-300 mb-1">
                 Full Name
               </label>
               <input
                 type="text"
-                className="w-full border rounded-md p-2"
+                className="w-full bg-gray-700 border border-gray-600 rounded-md p-2 text-gray-100 focus:ring-1 focus:ring-blue-500 focus:border-blue-500 outline-none"
                 value={form.fullName}
                 onChange={(e) => setForm({ ...form, fullName: e.target.value })}
                 required
               />
             </div>
             <div>
-              <label className="block text-sm font-medium text-gray-700 mb-1">
+              <label className="block text-sm font-medium text-gray-300 mb-1">
                 Phone Number
               </label>
               <input
                 type="tel"
-                className="w-full border rounded-md p-2"
+                className="w-full bg-gray-700 border border-gray-600 rounded-md p-2 text-gray-100 focus:ring-1 focus:ring-blue-500 focus:border-blue-500 outline-none"
                 placeholder="03XXXXXXXXX"
                 value={form.phone}
                 onChange={(e) => setForm({ ...form, phone: e.target.value })}
@@ -161,48 +162,48 @@ export default function CheckoutModal({
               />
             </div>
             <div>
-              <label className="block text-sm font-medium text-gray-700 mb-1">
+              <label className="block text-sm font-medium text-gray-300 mb-1">
                 Address Line 1
               </label>
               <input
                 type="text"
-                className="w-full border rounded-md p-2"
+                className="w-full bg-gray-700 border border-gray-600 rounded-md p-2 text-gray-100 focus:ring-1 focus:ring-blue-500 focus:border-blue-500 outline-none"
                 value={form.addressLine1}
                 onChange={(e) => setForm({ ...form, addressLine1: e.target.value })}
                 required
               />
             </div>
             <div>
-              <label className="block text-sm font-medium text-gray-700 mb-1">
+              <label className="block text-sm font-medium text-gray-300 mb-1">
                 Address Line 2 (Optional)
               </label>
               <input
                 type="text"
-                className="w-full border rounded-md p-2"
+                className="w-full bg-gray-700 border border-gray-600 rounded-md p-2 text-gray-100 focus:ring-1 focus:ring-blue-500 focus:border-blue-500 outline-none"
                 value={form.addressLine2}
                 onChange={(e) => setForm({ ...form, addressLine2: e.target.value })}
               />
             </div>
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
               <div>
-                <label className="block text-sm font-medium text-gray-700 mb-1">
+                <label className="block text-sm font-medium text-gray-300 mb-1">
                   City
                 </label>
                 <input
                   type="text"
-                  className="w-full border rounded-md p-2"
+                  className="w-full bg-gray-700 border border-gray-600 rounded-md p-2 text-gray-100 focus:ring-1 focus:ring-blue-500 focus:border-blue-500 outline-none"
                   value={form.city}
                   onChange={(e) => setForm({ ...form, city: e.target.value })}
                   required
                 />
               </div>
               <div>
-                <label className="block text-sm font-medium text-gray-700 mb-1">
+                <label className="block text-sm font-medium text-gray-300 mb-1">
                   State
                 </label>
                 <input
                   type="text"
-                  className="w-full border rounded-md p-2"
+                  className="w-full bg-gray-700 border border-gray-600 rounded-md p-2 text-gray-100 focus:ring-1 focus:ring-blue-500 focus:border-blue-500 outline-none"
                   value={form.state}
                   onChange={(e) => setForm({ ...form, state: e.target.value })}
                   required
@@ -211,24 +212,24 @@ export default function CheckoutModal({
             </div>
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
               <div>
-                <label className="block text-sm font-medium text-gray-700 mb-1">
+                <label className="block text-sm font-medium text-gray-300 mb-1">
                   Zip Code
                 </label>
                 <input
                   type="text"
-                  className="w-full border rounded-md p-2"
+                  className="w-full bg-gray-700 border border-gray-600 rounded-md p-2 text-gray-100 focus:ring-1 focus:ring-blue-500 focus:border-blue-500 outline-none"
                   value={form.zipCode}
                   onChange={(e) => setForm({ ...form, zipCode: e.target.value })}
                   required
                 />
               </div>
               <div>
-                <label className="block text-sm font-medium text-gray-700 mb-1">
+                <label className="block text-sm font-medium text-gray-300 mb-1">
                   Country
                 </label>
                 <input
                   type="text"
-                  className="w-full border rounded-md p-2"
+                  className="w-full bg-gray-700 border border-gray-600 rounded-md p-2 text-gray-100 focus:ring-1 focus:ring-blue-500 focus:border-blue-500 outline-none"
                   value={form.country}
                   onChange={(e) => setForm({ ...form, country: e.target.value })}
                   required
@@ -236,11 +237,11 @@ export default function CheckoutModal({
               </div>
             </div>
             <div>
-              <label className="block text-sm font-medium text-gray-700 mb-1">
+              <label className="block text-sm font-medium text-gray-300 mb-1">
                 Payment Method
               </label>
               <select
-                className="w-full border rounded-md p-2"
+                className="w-full bg-gray-700 border border-gray-600 rounded-md p-2 text-gray-100 focus:ring-1 focus:ring-blue-500 focus:border-blue-500 outline-none appearance-none cursor-pointer"
                 value={form.paymentMethod}
                 onChange={(e) => setForm({ ...form, paymentMethod: e.target.value })}
                 required
@@ -250,11 +251,11 @@ export default function CheckoutModal({
               </select>
             </div>
             <div>
-              <label className="block text-sm font-medium text-gray-700 mb-1">
+              <label className="block text-sm font-medium text-gray-300 mb-1">
                 Order Notes (optional)
               </label>
               <textarea
-                className="w-full border rounded-md p-2"
+                className="w-full bg-gray-700 border border-gray-600 rounded-md p-2 text-gray-100 focus:ring-1 focus:ring-blue-500 focus:border-blue-500 outline-none resize-none"
                 rows={2}
                 value={form.notes}
                 onChange={(e) => setForm({ ...form, notes: e.target.value })}
@@ -263,19 +264,19 @@ export default function CheckoutModal({
           </form>
 
           {/* Right: Order Summary */}
-          <aside className="md:w-80 w-full border-t md:border-t-0 md:border-l p-5 space-y-4 bg-gray-50">
-            <h4 className="text-base font-semibold">Order Summary</h4>
+          <aside className="md:w-80 w-full border-t md:border-t-0 md:border-l border-gray-700 p-5 space-y-4 bg-gray-800">
+            <h4 className="text-xl font-semibold text-blue-300">Order Summary</h4>
             <div className="flex items-center gap-3">
               <img
                 src={product?.image}
                 alt={product?.name}
-                className="w-16 h-16 object-cover rounded"
+                className="w-16 h-16 object-cover rounded border border-gray-600"
               />
               <div>
-                <p className="font-medium text-gray-800 line-clamp-2">
+                <p className="font-medium text-gray-100 line-clamp-2">
                   {product?.name}
                 </p>
-                <p className="text-sm text-gray-600">
+                <p className="text-sm text-gray-400">
                   {selectedColor ? `Color: ${selectedColor}` : null}
                 </p>
               </div>
@@ -283,14 +284,14 @@ export default function CheckoutModal({
 
             {/* Quantity Stepper */}
             <div className="flex items-center justify-between">
-              <span className="text-sm text-gray-700">Quantity</span>
-              <div className="inline-flex items-center border rounded-lg overflow-hidden">
+              <span className="text-sm text-gray-300">Quantity</span>
+              <div className="inline-flex items-center border border-gray-600 rounded-md overflow-hidden">
                 <button
                   type="button"
                   onClick={() =>
                     setQty((q) => Math.max(1, Number(q || 1) - 1))
                   }
-                  className="px-3 py-2 bg-gray-100 hover:bg-gray-200"
+                  className="px-3 py-2 bg-gray-700 hover:bg-gray-600 text-gray-100 transition-colors duration-200"
                 >
                   -
                 </button>
@@ -301,21 +302,21 @@ export default function CheckoutModal({
                   onChange={(e) =>
                     setQty(Math.max(1, Number(e.target.value) || 1))
                   }
-                  className="w-16 text-center outline-none py-2"
+                  className="w-16 text-center outline-none py-2 bg-gray-800 text-gray-100 border-x border-gray-600"
                 />
                 <button
                   type="button"
                   onClick={() =>
                     setQty((q) => Math.max(1, Number(q || 1) + 1))
                   }
-                  className="px-3 py-2 bg-gray-100 hover:bg-gray-200"
+                  className="px-3 py-2 bg-gray-700 hover:bg-gray-600 text-gray-100 transition-colors duration-200"
                 >
                   +
                 </button>
               </div>
             </div>
 
-            <div className="text-sm text-gray-700 space-y-2">
+            <div className="text-sm text-gray-300 space-y-2">
               <div className="flex justify-between">
                 <span>Unit Price</span>
                 <span>Rs {unitPrice.toLocaleString()}</span>
@@ -328,7 +329,7 @@ export default function CheckoutModal({
                 <span>Delivery</span>
                 <span>Rs {delivery}</span>
               </div>
-              <div className="flex justify-between font-semibold text-gray-900 border-t pt-2">
+              <div className="flex justify-between font-semibold text-blue-300 border-t border-gray-700 pt-2">
                 <span>Total</span>
                 <span>Rs {total.toLocaleString()}</span>
               </div>
@@ -337,11 +338,11 @@ export default function CheckoutModal({
         </div>
 
         {/* Footer Buttons */}
-        <div className="border-t px-5 py-3 flex gap-3 bg-white">
+        <div className="border-t border-gray-700 px-5 py-3 flex gap-3 bg-gray-800">
           <button
             type="button"
             onClick={handlePlaceOrder}
-            className="w-full bg-orange-500 text-white px-6 py-3 rounded-lg hover:bg-orange-600 transition"
+            className="w-full bg-blue-600 text-white px-6 py-3 rounded-md hover:bg-blue-700 transition-colors duration-200 font-semibold"
           >
             Place Order
           </button>
@@ -350,3 +351,13 @@ export default function CheckoutModal({
     </div>
   );
 }
+
+
+
+
+
+
+
+
+
+

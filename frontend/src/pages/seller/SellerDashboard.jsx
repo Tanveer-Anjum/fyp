@@ -23,12 +23,12 @@ export default function SellerDashboard() {
   };
 
   return (
-    <div className="flex min-h-screen bg-gray-100">
+    <div className="flex min-h-screen bg-gray-900 text-gray-100">
       {/* Sidebar */}
       <SellerSidebar activeTab={activeTab} setActiveTab={setActiveTab} />
 
       {/* Main Content */}
-      <main className="flex-1 p-6 overflow-y-auto">{renderTab()}</main>
+      <main className="flex-1 p-8 overflow-y-auto">{renderTab()}</main>
     </div>
   );
 }
