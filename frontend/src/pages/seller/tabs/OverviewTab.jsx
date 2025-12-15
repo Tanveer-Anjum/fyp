@@ -157,15 +157,22 @@ export default function OverviewTab() {
 
   useEffect(() => {
     const fetchData = async () => {
+<<<<<<< HEAD
       if (!token) {
         setLoading(false);
         return;
       }
+=======
+>>>>>>> 03cf849843087c1d50dea49e2532aafd15110219
       await Promise.all([fetchProducts(), fetchOrders()]);
       setLoading(false);
     };
     fetchData();
+<<<<<<< HEAD
   }, [token]);
+=======
+  }, []);
+>>>>>>> 03cf849843087c1d50dea49e2532aafd15110219
 
   if (loading) return <div className="text-center mt-4">Loading dashboard...</div>;
 
@@ -213,8 +220,13 @@ export default function OverviewTab() {
           </BarChart>
         </ResponsiveContainer>
       </div>
+<<<<<<< HEAD
       <div className="mt-6 grid grid-cols-1 md:grid-cols-3 gap-4 text-black">
         <div className="bg-green-100  p-4 rounded-lg text-center">
+=======
+      <div className="mt-6 grid grid-cols-1 md:grid-cols-3 gap-4">
+        <div className="bg-green-100 p-4 rounded-lg text-center">
+>>>>>>> 03cf849843087c1d50dea49e2532aafd15110219
           <h3 className="text-lg font-medium">Total Products</h3>
           <p className="text-2xl font-bold">{totalProducts}</p>
         </div>

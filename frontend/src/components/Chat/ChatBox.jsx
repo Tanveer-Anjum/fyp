@@ -9,13 +9,22 @@ const INITIAL_HISTORY = [
 ];
 
 
+// The INITIAL_HISTORY must match the format expected by the Gemini API
+const INITIAL_HISTORY = [
+    { role: "model", parts: [{ text: "Hello! I am the Bazario Assistant. How can I help you with your e-commerce needs today?" }] }
+];
+
+
 function ChatBox({ onClose }) {
     // We now use chatHistory to store the full conversation context
     const [chatHistory, setChatHistory] = useState(INITIAL_HISTORY);
     const [input, setInput] = useState("");
     const [loading, setLoading] = useState(false); // Add loading state
     const messagesEndRef = useRef(null);
+<<<<<<< HEAD
     const [conversation, setConversation] = useState({}); // track giftRecipient
+=======
+>>>>>>> 03cf849843087c1d50dea49e2532aafd15110219
 
     // Auto-scroll to the latest message
     useEffect(() => {
@@ -41,7 +50,10 @@ function ChatBox({ onClose }) {
             const response = await axios.post("http://localhost:8080/api/chat", {
                 prompt: prompt,
                 history: chatHistory, // Send the previous history
+<<<<<<< HEAD
                 conversation, // Send conversation for context
+=======
+>>>>>>> 03cf849843087c1d50dea49e2532aafd15110219
             });
 
             // 4. Update the state using the full conversation history returned by the backend
@@ -50,12 +62,18 @@ function ChatBox({ onClose }) {
             } else {
                 // Fallback for non-history response (shouldn't happen with our backend)
                 const botText = response.data.text || "An unexpected response received.";
+<<<<<<< HEAD
                 const botMessage = { role: "model", parts: [{ text: botText }], products: response.data.structuredProducts || [] };
                 setChatHistory((prev) => [...prev, botMessage]);
             }
             if (response.data.conversation) {
                 setConversation(response.data.conversation);
             }
+=======
+                const botMessage = { role: "model", parts: [{ text: botText }] };
+                setChatHistory((prev) => [...prev, botMessage]);
+            }
+>>>>>>> 03cf849843087c1d50dea49e2532aafd15110219
             
         } catch (error) {
             console.error("Chat API Error:", error);
@@ -103,11 +121,14 @@ function ChatBox({ onClose }) {
                             {msg.role === 'user' ? 'You' : 'Assistant'}
                         </strong>
                         <p className="text-sm">{extractText(msg.parts)}</p>
+<<<<<<< HEAD
                         {msg.products && msg.products.length > 0 && (
                             <div className="mt-3">
                                 <ProductCardDisplay products={msg.products} />
                             </div>
                         )}
+=======
+>>>>>>> 03cf849843087c1d50dea49e2532aafd15110219
                     </div>
                 ))}
 

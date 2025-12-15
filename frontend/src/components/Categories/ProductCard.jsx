@@ -72,7 +72,11 @@ const ProductCard = ({ product }) => {
       </div>
 
       {/* Overlay for Quick View/Add to Cart on hover (Optional, can be added here) */}
+<<<<<<< HEAD
       <div className="absolute inset-0 bg-black bg-opacity-60 flex items-center justify-center opacity-0 group-hover:opacity-60 transition-opacity duration-300 rounded-lg">
+=======
+      <div className="absolute inset-0 bg-black bg-opacity-60 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity duration-300 rounded-lg">
+>>>>>>> 03cf849843087c1d50dea49e2532aafd15110219
         <button
           onClick={(e) => { e.stopPropagation(); handleClick(); }}
           className="bg-indigo-600 text-white px-5 py-2 rounded-full text-sm font-medium hover:bg-indigo-700 transition-colors duration-300 flex items-center space-x-2"

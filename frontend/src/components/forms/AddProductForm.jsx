@@ -308,6 +308,11 @@ export default function AddProductForm({ fetchProducts, editingProduct, closeFor
         colors: editingProduct.colors ? editingProduct.colors.join(",") : "",
         warranty: editingProduct.warranty || "",
         delivery: editingProduct.delivery || "",
+<<<<<<< HEAD
+=======
+        rating: editingProduct.rating || "",
+        reviews: editingProduct.reviews || "",
+>>>>>>> 03cf849843087c1d50dea49e2532aafd15110219
         stock: editingProduct.stock || "",
         description: editingProduct.description || "",
         imageFile: null,
@@ -368,6 +373,11 @@ export default function AddProductForm({ fetchProducts, editingProduct, closeFor
           colors: "",
           warranty: "",
           delivery: "",
+<<<<<<< HEAD
+=======
+          rating: "",
+          reviews: "",
+>>>>>>> 03cf849843087c1d50dea49e2532aafd15110219
           stock: "",
           description: "",
           imageFile: null,
@@ -381,6 +391,7 @@ export default function AddProductForm({ fetchProducts, editingProduct, closeFor
   };
 
   return (
+<<<<<<< HEAD
     <form onSubmit={handleSubmit} className="bg-gray-800 p-8 rounded-lg shadow-xl space-y-4 text-white">
       <h3 className="text-2xl font-bold text-center mb-6">{editingProduct ? "Edit Product" : "Add New Product"}</h3>
 
@@ -389,10 +400,21 @@ export default function AddProductForm({ fetchProducts, editingProduct, closeFor
       <input type="number" name="price" placeholder="Price" value={form.price} onChange={handleChange} className="w-full p-3 bg-gray-700 border border-gray-600 rounded-md focus:ring-2 focus:ring-blue-500 focus:border-transparent outline-none" required />
 
       <select name="categoryType" value={form.categoryType} onChange={handleChange} className="w-full p-3 bg-gray-700 border border-gray-600 rounded-md focus:ring-2 focus:ring-blue-500 focus:border-transparent outline-none appearance-none cursor-pointer">
+=======
+    <form onSubmit={handleSubmit} className="bg-white p-6 rounded shadow-md space-y-3">
+      <h3 className="text-lg font-bold">{editingProduct ? "Edit Product" : "Add New Product"}</h3>
+
+      <input type="text" name="name" placeholder="Product Name" value={form.name} onChange={handleChange} className="w-full border rounded p-2" required />
+
+      <input type="number" name="price" placeholder="Price" value={form.price} onChange={handleChange} className="w-full border rounded p-2" required />
+
+      <select name="categoryType" value={form.categoryType} onChange={handleChange} className="w-full border rounded p-2">
+>>>>>>> 03cf849843087c1d50dea49e2532aafd15110219
         <option value="New">New</option>
         <option value="Old">Old</option>
       </select>
 
+<<<<<<< HEAD
       <input type="text" name="categoryName" placeholder="Category Name" value={form.categoryName} onChange={handleChange} className="w-full p-3 bg-gray-700 border border-gray-600 rounded-md focus:ring-2 focus:ring-blue-500 focus:border-transparent outline-none" />
 
       <input type="text" name="brand" placeholder="Brand" value={form.brand} onChange={handleChange} className="w-full p-3 bg-gray-700 border border-gray-600 rounded-md focus:ring-2 focus:ring-blue-500 focus:border-transparent outline-none" />
@@ -400,18 +422,32 @@ export default function AddProductForm({ fetchProducts, editingProduct, closeFor
       <input type="text" name="colors" placeholder="Colors (comma separated)" value={form.colors} onChange={handleChange} className="w-full p-3 bg-gray-700 border border-gray-600 rounded-md focus:ring-2 focus:ring-blue-500 focus:border-transparent outline-none" />
 
       <select name="warranty" value={form.warranty} onChange={handleChange} className="w-full p-3 bg-gray-700 border border-gray-600 rounded-md focus:ring-2 focus:ring-blue-500 focus:border-transparent outline-none appearance-none cursor-pointer">
+=======
+      <input type="text" name="categoryName" placeholder="Category Name" value={form.categoryName} onChange={handleChange} className="w-full border rounded p-2" />
+
+      <input type="text" name="brand" placeholder="Brand" value={form.brand} onChange={handleChange} className="w-full border rounded p-2" />
+
+      <input type="text" name="colors" placeholder="Colors (comma separated)" value={form.colors} onChange={handleChange} className="w-full border rounded p-2" />
+
+      <select name="warranty" value={form.warranty} onChange={handleChange} className="w-full border rounded p-2">
+>>>>>>> 03cf849843087c1d50dea49e2532aafd15110219
         <option value="">Warranty</option>
         <option value="No Warranty">No Warranty</option>
         <option value="Seller Warranty">Seller Warranty</option>
         <option value="Brand Warranty">Brand Warranty</option>
       </select>
 
+<<<<<<< HEAD
       <select name="delivery" value={form.delivery} onChange={handleChange} className="w-full p-3 bg-gray-700 border border-gray-600 rounded-md focus:ring-2 focus:ring-blue-500 focus:border-transparent outline-none appearance-none cursor-pointer">
+=======
+      <select name="delivery" value={form.delivery} onChange={handleChange} className="w-full border rounded p-2">
+>>>>>>> 03cf849843087c1d50dea49e2532aafd15110219
         <option value="">Delivery</option>
         <option value="Standard">Standard</option>
         <option value="Express">Express</option>
       </select>
 
+<<<<<<< HEAD
       <input type="number" name="stock" placeholder="Stock Quantity" value={form.stock} onChange={handleChange} className="w-full p-3 bg-gray-700 border border-gray-600 rounded-md focus:ring-2 focus:ring-blue-500 focus:border-transparent outline-none" />
 
       <textarea name="description" placeholder="Description" value={form.description} onChange={handleChange} className="w-full p-3 bg-gray-700 border border-gray-600 rounded-md focus:ring-2 focus:ring-blue-500 focus:border-transparent outline-none" />
@@ -420,6 +456,20 @@ export default function AddProductForm({ fetchProducts, editingProduct, closeFor
       {form.imagePreview && <img src={form.imagePreview} alt="Preview" className="h-32 w-32 mt-2 rounded object-cover border-2 border-gray-600" />}
 
       <button type="submit" className="w-full bg-blue-600 text-white font-bold py-3 rounded-md hover:bg-blue-700 transition duration-300">
+=======
+      <input type="number" name="rating" min="1" max="5" step="0.1" placeholder="Rating" value={form.rating} onChange={handleChange} className="w-full border rounded p-2" />
+
+      <input type="number" name="reviews" placeholder="Reviews Count" value={form.reviews} onChange={handleChange} className="w-full border rounded p-2" />
+
+      <input type="number" name="stock" placeholder="Stock Quantity" value={form.stock} onChange={handleChange} className="w-full border rounded p-2" />
+
+      <textarea name="description" placeholder="Description" value={form.description} onChange={handleChange} className="w-full border rounded p-2" />
+
+      <input type="file" accept="image/*" onChange={handleFileChange} className="w-full border rounded p-2" />
+      {form.imagePreview && <img src={form.imagePreview} alt="Preview" className="h-32 w-32 mt-2 rounded object-cover" />}
+
+      <button type="submit" className="bg-green-600 text-white px-4 py-2 rounded hover:bg-green-700">
+>>>>>>> 03cf849843087c1d50dea49e2532aafd15110219
         {editingProduct ? "Update Product" : "Add Product"}
       </button>
     </form>

@@ -13,7 +13,11 @@ export default function Categories() {
   const [activeTab, setActiveTab] = useState("old");
 
   return (
+<<<<<<< HEAD
     <section className="py-64 px-4 bg-gray-50 dark:bg-gray-900 min-h-screen">
+=======
+    <section className="py-12 px-4 bg-gray-50 dark:bg-gray-900 min-h-screen">
+>>>>>>> 03cf849843087c1d50dea49e2532aafd15110219
       {/* Title */}
       <h2 className="text-4xl font-extrabold text-center text-gray-900 dark:text-white mb-10 leading-tight">
         Explore Our <span className="text-indigo-600">Diverse Categories</span>
