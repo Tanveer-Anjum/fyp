@@ -1037,18 +1037,307 @@
 
 
 //new one my delte 
-// ----------------------
-// backend/server.js
+// // ----------------------
+// // backend/server.js
+// import express from "express";
+// import cors from "cors";
+// import dotenv from "dotenv";
+// import connectDB from "./config/db.js";
+// import multer from "multer";
+// import path from "path";
+
+// import Product from "./models/Product.js";
+
+// // ROUTES (keep your existing route files)
+// import authRoutes from "./routes/authRoutes.js";
+// import googleAuthRoute from "./routes/googleAuthRoute.js";
+// import adminRoutes from "./routes/adminRoutes.js";
+// import sellerRouter from "./routes/sellerRoutes.js";
+// import mainAdmin from "./routes/mainAdmin.js";
+// import userRoutes from "./routes/userRoutes.js";
+// import productRoutes from "./routes/productRoutes.js";
+// import orderRoutes from "./routes/orderRoutes.js";
+// import supportRoutes from "./routes/support.js";
+
+// dotenv.config();
+// connectDB(); // your connectDB should use process.env.MONGO_URI for local Compass
+
+// const app = express();
+// const PORT = process.env.PORT || 8080;
+
+// app.use(
+//   cors({
+//     origin: "http://localhost:5173",
+//     credentials: true,
+//   })
+// );
+// app.use(express.json());
+// app.use("/uploads", express.static("uploads"));
+
+// // Multer (unchanged)
+// const storage = multer.diskStorage({
+//   destination: (req, file, cb) => cb(null, "uploads/"),
+//   filename: (req, file, cb) =>
+//     cb(null, `${Date.now()}${path.extname(file.originalname)}`),
+// });
+// const upload = multer({ storage });
+
+// // Register routes (unchanged)
+// app.use("/api/auth", authRoutes);
+// app.use("/api/auth", googleAuthRoute);
+// app.use("/api/admin", adminRoutes);
+// app.use("/api/main-admin", mainAdmin);
+// app.use("/api/seller", sellerRouter);
+// app.use("/api/users", userRoutes);
+// app.use("/api/products", productRoutes);
+// app.use("/api/orders", orderRoutes);
+// app.use("/api/support", supportRoutes);
+
+// // -----------------------------
+// // Utilities: local NLP and search
+// // -----------------------------
+
+// // Simple stopwords for keyword extraction
+// const STOPWORDS = new Set([
+//   "i","me","my","we","our","you","your","the","a","an","and","or","for","to","of","in","on","is","are","be","with","please","want","looking","wanting","would","like","help","show","give"
+// ]);
+
+// function extractKeywordsLocal(text) {
+//   if (!text || typeof text !== "string") return [];
+//   const cleaned = text
+//     .replace(/[^\w\s]/g, " ") // remove punctuation
+//     .toLowerCase();
+//   const tokens = cleaned.split(/\s+/).filter(Boolean);
+//   const keywords = [];
+//   for (const t of tokens) {
+//     if (STOPWORDS.has(t)) continue;
+//     if (t.length <= 2) continue;
+//     // skip numeric tokens like "2025" unless useful
+//     if (/^\d+$/.test(t)) continue;
+//     keywords.push(t);
+//   }
+//   // return unique and keep top N
+//   return [...new Set(keywords)].slice(0, 8);
+// }
+
+// // Gift detection
+// function detectGiftIntent(text) {
+//   const lower = (text || "").toLowerCase();
+//   if (!lower.includes("gift")) return null;
+//   // recipient detection
+//   const recipients = ["sister","brother","mother","father","mom","dad","wife","husband","friend","son","daughter"];
+//   for (const r of recipients) {
+//     if (lower.includes(r)) return r;
+//   }
+//   return "generic";
+// }
+
+// // Preferred gift categories fallback (if no direct product matched)
+// const GIFT_FALLBACK_CATEGORIES = ["Watches","Bags","Books","Shoes","Electronics","Home & Living","Beauty"];
+
+// // Build MongoDB search filters from keywords
+// function buildFiltersFromKeywords(keywords) {
+//   if (!keywords || keywords.length === 0) return [];
+//   const filters = [];
+//   for (const k of keywords) {
+//     // regex search in common fields
+//     const re = { $regex: k, $options: "i" };
+//     filters.push({ name: re });
+//     filters.push({ categoryName: re });
+//     filters.push({ brand: re });
+//     filters.push({ description: re });
+//   }
+//   return filters;
+// }
+
+// // Normalize product objects for frontend (include full image URL)
+// function normalizeProducts(products) {
+//   return products.map((p) => ({
+//     _id: p._id,
+//     name: p.name || "Unnamed product",
+//     price: p.price ?? 0,
+//     categoryName: p.categoryName || "",
+//     description: p.description || "",
+//     stock: p.stock ?? 0,
+//     imageUrl: p.imageUrl ? `http://localhost:${PORT}${p.imageUrl}` : "",
+//   }));
+// }
+
+// // -----------------------------
+// // /api/chat — dynamic recommendations + natural queries
+// // -----------------------------
+// app.post("/api/chat", async (req, res) => {
+//   try {
+//     const { prompt } = req.body;
+//     if (!prompt || typeof prompt !== "string") {
+//       return res.status(400).json({ text: "Please provide a prompt." });
+//     }
+
+//     const lower = prompt.toLowerCase();
+
+//     // quick greeting responses (no DB required)
+//     if (/\b(hi|hello|hey)\b/.test(lower)) {
+//       return res.json({
+//         text: "Hi! I'm Bazario Assistant — I can recommend products from our catalog. Try: 'I want a gift for my sister' or 'Recommend a phone under 20000'.",
+//         structuredProducts: [],
+//       });
+//     }
+
+//     // block very off-topic questions politely
+//     const offTopics = ["cricket","football","politics","movie","music","history"];
+//     if (offTopics.some(t => lower.includes(t))) {
+//       return res.json({
+//         text: "As the Bazario Assistant, I help with shopping and product recommendations from Bazario only.",
+//         structuredProducts: [],
+//       });
+//     }
+
+//     // 1) detect gift intent
+//     const giftRecipient = detectGiftIntent(prompt);
+//     if (giftRecipient) {
+//       // Extract keywords and try to find products matching recipient or gift terms
+//       const keywords = extractKeywordsLocal(prompt); // e.g., ["gift","sister","watch","book"]
+//       const filters = buildFiltersFromKeywords(keywords);
+
+//       // Try priority search: include recipient word if present
+//       if (giftRecipient && giftRecipient !== "generic") {
+//         filters.unshift({ description: { $regex: giftRecipient, $options: "i" } });
+//         filters.unshift({ name: { $regex: giftRecipient, $options: "i" } });
+//       }
+
+//       // Query DB
+//       let products = [];
+//       if (filters.length > 0) {
+//         products = await Product.find({ $or: filters }).limit(8).lean();
+//       }
+
+//       // If nothing found, try fallback by searching popular gift categories that exist in DB
+//       if (!products || products.length === 0) {
+//         // get distinct categories in DB
+//         const dbCats = await Product.distinct("categoryName");
+//         const fallbackCats = GIFT_FALLBACK_CATEGORIES.filter(c => dbCats.map(x => String(x).toLowerCase()).includes(String(c).toLowerCase()));
+
+//         if (fallbackCats.length > 0) {
+//           products = await Product.find({ categoryName: { $in: fallbackCats } }).limit(8).lean();
+//         }
+//       }
+
+//       if (!products || products.length === 0) {
+//         return res.json({
+//           text: `Sorry — I couldn't find specific gift items for "${giftRecipient}" right now. Would you like me to search by price range or category?`,
+//           structuredProducts: [],
+//         });
+//       }
+
+//       return res.json({
+//         text: `Here are some gift suggestions for your ${giftRecipient}:`,
+//         structuredProducts: normalizeProducts(products),
+//       });
+//     }
+
+//     // 2) Extract keywords from the prompt and run a broad dynamic search
+//     const keywords = extractKeywordsLocal(prompt); // e.g., ["phone","under","20000"] but numbers filtered
+//     const filters = buildFiltersFromKeywords(keywords);
+
+//     // If user specified a price like "under 20000", detect it
+//     let priceClause = null;
+//     const mUnder = prompt.toLowerCase().match(/\bunder\s+([0-9,]+)/);
+//     if (mUnder) {
+//       const v = Number(mUnder[1].replace(/,/g, ""));
+//       if (!Number.isNaN(v)) priceClause = { price: { $lte: v } };
+//     }
+//     const mBelow = prompt.toLowerCase().match(/\bbelow\s+([0-9,]+)/);
+//     if (!priceClause && mBelow) {
+//       const v = Number(mBelow[1].replace(/,/g, ""));
+//       if (!Number.isNaN(v)) priceClause = { price: { $lte: v } };
+//     }
+
+//     // Run DB query if we have some filters
+//     let products = [];
+//     if (filters.length > 0) {
+//       const baseQuery = { $or: filters };
+//       const finalQuery = priceClause ? { ...baseQuery, ...priceClause } : baseQuery;
+//       products = await Product.find(finalQuery).limit(12).lean();
+//     }
+
+//     // If no results, try searching by category words in DB (dynamic category detection)
+//     if ((!products || products.length === 0) && keywords.length > 0) {
+//       // fetch all categories and try to match keywords to categoryName
+//       const dbCats = await Product.distinct("categoryName");
+//       const catCandidates = dbCats.filter(cat => {
+//         if (!cat) return false;
+//         const low = String(cat).toLowerCase();
+//         return keywords.some(k => low.includes(k) || k.includes(low));
+//       });
+
+//       if (catCandidates.length) {
+//         const q = { categoryName: { $in: catCandidates } };
+//         if (priceClause) Object.assign(q, priceClause);
+//         products = await Product.find(q).limit(12).lean();
+//       }
+//     }
+
+//     // If still no products, do a broad 'name or description' match for the whole prompt
+//     if ((!products || products.length === 0)) {
+//       const re = { $regex: prompt.replace(/[^\w\s]/g, " ").trim(), $options: "i" };
+//       products = await Product.find({ $or: [{ name: re }, { description: re }] }).limit(12).lean();
+//     }
+
+//     // Final fallback — no products found
+//     if (!products || products.length === 0) {
+//       return res.json({
+//         text: "I couldn't find matching items in Bazario for that query. Try specifying a category (e.g., 'phone', 'watch') or a price range like 'under 20000'.",
+//         structuredProducts: [],
+//       });
+//     }
+
+//     // Normalize and return
+//     const normalized = normalizeProducts(products);
+//     return res.json({
+//       text: `I found ${normalized.length} product(s) that match your request.`,
+//       structuredProducts: normalized,
+//     });
+//   } catch (err) {
+//     console.error("Chat error:", err);
+//     return res.status(500).json({
+//       text: "Sorry — the assistant had an error. Try again.",
+//       structuredProducts: [],
+//     });
+//   }
+// });
+
+// // Optional separate /api/recommend endpoint (same logic, can be used by frontend)
+// app.post("/api/recommend", async (req, res) => {
+//   // simply forward to /api/chat logic
+//   return app._router.handle(req, res, () => {}, "/api/chat", "POST");
+// });
+
+// // START
+// app.listen(PORT, () => {
+//   console.log(`Bazario backend running on http://localhost:${PORT}`);
+// });
+
+
+
+
+
+
+
+
+
+//abi wala 
+
 import express from "express";
 import cors from "cors";
 import dotenv from "dotenv";
 import connectDB from "./config/db.js";
 import multer from "multer";
 import path from "path";
+import OpenAI from "openai";
 
 import Product from "./models/Product.js";
 
-// ROUTES (keep your existing route files)
+// ROUTES (your existing routes)
 import authRoutes from "./routes/authRoutes.js";
 import googleAuthRoute from "./routes/googleAuthRoute.js";
 import adminRoutes from "./routes/adminRoutes.js";
@@ -1060,29 +1349,36 @@ import orderRoutes from "./routes/orderRoutes.js";
 import supportRoutes from "./routes/support.js";
 
 dotenv.config();
-connectDB(); // your connectDB should use process.env.MONGO_URI for local Compass
+connectDB();
 
 const app = express();
 const PORT = process.env.PORT || 8080;
 
-app.use(
-  cors({
-    origin: "http://localhost:5173",
-    credentials: true,
-  })
-);
+// ----------------------
+// MIDDLEWARE
+// ----------------------
+app.use(cors({ origin: "http://localhost:5173", credentials: true }));
 app.use(express.json());
 app.use("/uploads", express.static("uploads"));
 
-// Multer (unchanged)
+// ----------------------
+// MULTER
+// ----------------------
 const storage = multer.diskStorage({
   destination: (req, file, cb) => cb(null, "uploads/"),
   filename: (req, file, cb) =>
     cb(null, `${Date.now()}${path.extname(file.originalname)}`),
 });
-const upload = multer({ storage });
+multer({ storage });
 
-// Register routes (unchanged)
+// ----------------------
+// OPENAI SETUP
+// ----------------------
+const openai = new OpenAI({ apiKey: process.env.OPENAI_API_KEY });
+
+// ----------------------
+// ROUTES
+// ----------------------
 app.use("/api/auth", authRoutes);
 app.use("/api/auth", googleAuthRoute);
 app.use("/api/admin", adminRoutes);
@@ -1093,226 +1389,96 @@ app.use("/api/products", productRoutes);
 app.use("/api/orders", orderRoutes);
 app.use("/api/support", supportRoutes);
 
-// -----------------------------
-// Utilities: local NLP and search
-// -----------------------------
-
-// Simple stopwords for keyword extraction
-const STOPWORDS = new Set([
-  "i","me","my","we","our","you","your","the","a","an","and","or","for","to","of","in","on","is","are","be","with","please","want","looking","wanting","would","like","help","show","give"
-]);
-
-function extractKeywordsLocal(text) {
-  if (!text || typeof text !== "string") return [];
-  const cleaned = text
-    .replace(/[^\w\s]/g, " ") // remove punctuation
-    .toLowerCase();
-  const tokens = cleaned.split(/\s+/).filter(Boolean);
-  const keywords = [];
-  for (const t of tokens) {
-    if (STOPWORDS.has(t)) continue;
-    if (t.length <= 2) continue;
-    // skip numeric tokens like "2025" unless useful
-    if (/^\d+$/.test(t)) continue;
-    keywords.push(t);
-  }
-  // return unique and keep top N
-  return [...new Set(keywords)].slice(0, 8);
-}
-
-// Gift detection
-function detectGiftIntent(text) {
-  const lower = (text || "").toLowerCase();
-  if (!lower.includes("gift")) return null;
-  // recipient detection
-  const recipients = ["sister","brother","mother","father","mom","dad","wife","husband","friend","son","daughter"];
-  for (const r of recipients) {
-    if (lower.includes(r)) return r;
-  }
-  return "generic";
-}
-
-// Preferred gift categories fallback (if no direct product matched)
-const GIFT_FALLBACK_CATEGORIES = ["Watches","Bags","Books","Shoes","Electronics","Home & Living","Beauty"];
-
-// Build MongoDB search filters from keywords
-function buildFiltersFromKeywords(keywords) {
-  if (!keywords || keywords.length === 0) return [];
-  const filters = [];
-  for (const k of keywords) {
-    // regex search in common fields
-    const re = { $regex: k, $options: "i" };
-    filters.push({ name: re });
-    filters.push({ categoryName: re });
-    filters.push({ brand: re });
-    filters.push({ description: re });
-  }
-  return filters;
-}
-
-// Normalize product objects for frontend (include full image URL)
-function normalizeProducts(products) {
-  return products.map((p) => ({
-    _id: p._id,
-    name: p.name || "Unnamed product",
-    price: p.price ?? 0,
-    categoryName: p.categoryName || "",
-    description: p.description || "",
-    stock: p.stock ?? 0,
-    imageUrl: p.imageUrl ? `http://localhost:${PORT}${p.imageUrl}` : "",
-  }));
-}
-
-// -----------------------------
-// /api/chat — dynamic recommendations + natural queries
-// -----------------------------
+// ----------------------
+// AI CHAT + MONGODB GIFT RECOMMENDATION
+// ----------------------
 app.post("/api/chat", async (req, res) => {
   try {
-    const { prompt } = req.body;
+    const { prompt, conversation = {} } = req.body;
+
     if (!prompt || typeof prompt !== "string") {
-      return res.status(400).json({ text: "Please provide a prompt." });
-    }
-
-    const lower = prompt.toLowerCase();
-
-    // quick greeting responses (no DB required)
-    if (/\b(hi|hello|hey)\b/.test(lower)) {
-      return res.json({
-        text: "Hi! I'm Bazario Assistant — I can recommend products from our catalog. Try: 'I want a gift for my sister' or 'Recommend a phone under 20000'.",
+      return res.status(400).json({
+        text: "Please enter a valid message.",
         structuredProducts: [],
+        conversation,
       });
     }
 
-    // block very off-topic questions politely
-    const offTopics = ["cricket","football","politics","movie","music","history"];
-    if (offTopics.some(t => lower.includes(t))) {
-      return res.json({
-        text: "As the Bazario Assistant, I help with shopping and product recommendations from Bazario only.",
-        structuredProducts: [],
-      });
-    }
+    // Step 1: Ask AI to understand gift intent
+    const aiPrompt = `
+You are an AI gift assistant. The user may want to buy a gift.
 
-    // 1) detect gift intent
-    const giftRecipient = detectGiftIntent(prompt);
-    if (giftRecipient) {
-      // Extract keywords and try to find products matching recipient or gift terms
-      const keywords = extractKeywordsLocal(prompt); // e.g., ["gift","sister","watch","book"]
-      const filters = buildFiltersFromKeywords(keywords);
+From the message, extract:
+- giftRecipient (e.g., brother, sister, wife, father, mother)
+- categoryName (e.g., Shoes, Electronics, Bags, Novels) if mentioned
+- maxPrice (number in PKR, if mentioned)
 
-      // Try priority search: include recipient word if present
-      if (giftRecipient && giftRecipient !== "generic") {
-        filters.unshift({ description: { $regex: giftRecipient, $options: "i" } });
-        filters.unshift({ name: { $regex: giftRecipient, $options: "i" } });
-      }
+Respond ONLY in JSON like this:
+{
+  "giftRecipient": "",
+  "categoryName": "",
+  "maxPrice": null
+}
 
-      // Query DB
-      let products = [];
-      if (filters.length > 0) {
-        products = await Product.find({ $or: filters }).limit(8).lean();
-      }
+User message: "${prompt}"
+`;
 
-      // If nothing found, try fallback by searching popular gift categories that exist in DB
-      if (!products || products.length === 0) {
-        // get distinct categories in DB
-        const dbCats = await Product.distinct("categoryName");
-        const fallbackCats = GIFT_FALLBACK_CATEGORIES.filter(c => dbCats.map(x => String(x).toLowerCase()).includes(String(c).toLowerCase()));
-
-        if (fallbackCats.length > 0) {
-          products = await Product.find({ categoryName: { $in: fallbackCats } }).limit(8).lean();
-        }
-      }
-
-      if (!products || products.length === 0) {
-        return res.json({
-          text: `Sorry — I couldn't find specific gift items for "${giftRecipient}" right now. Would you like me to search by price range or category?`,
-          structuredProducts: [],
-        });
-      }
-
-      return res.json({
-        text: `Here are some gift suggestions for your ${giftRecipient}:`,
-        structuredProducts: normalizeProducts(products),
-      });
-    }
-
-    // 2) Extract keywords from the prompt and run a broad dynamic search
-    const keywords = extractKeywordsLocal(prompt); // e.g., ["phone","under","20000"] but numbers filtered
-    const filters = buildFiltersFromKeywords(keywords);
-
-    // If user specified a price like "under 20000", detect it
-    let priceClause = null;
-    const mUnder = prompt.toLowerCase().match(/\bunder\s+([0-9,]+)/);
-    if (mUnder) {
-      const v = Number(mUnder[1].replace(/,/g, ""));
-      if (!Number.isNaN(v)) priceClause = { price: { $lte: v } };
-    }
-    const mBelow = prompt.toLowerCase().match(/\bbelow\s+([0-9,]+)/);
-    if (!priceClause && mBelow) {
-      const v = Number(mBelow[1].replace(/,/g, ""));
-      if (!Number.isNaN(v)) priceClause = { price: { $lte: v } };
-    }
-
-    // Run DB query if we have some filters
-    let products = [];
-    if (filters.length > 0) {
-      const baseQuery = { $or: filters };
-      const finalQuery = priceClause ? { ...baseQuery, ...priceClause } : baseQuery;
-      products = await Product.find(finalQuery).limit(12).lean();
-    }
-
-    // If no results, try searching by category words in DB (dynamic category detection)
-    if ((!products || products.length === 0) && keywords.length > 0) {
-      // fetch all categories and try to match keywords to categoryName
-      const dbCats = await Product.distinct("categoryName");
-      const catCandidates = dbCats.filter(cat => {
-        if (!cat) return false;
-        const low = String(cat).toLowerCase();
-        return keywords.some(k => low.includes(k) || k.includes(low));
-      });
-
-      if (catCandidates.length) {
-        const q = { categoryName: { $in: catCandidates } };
-        if (priceClause) Object.assign(q, priceClause);
-        products = await Product.find(q).limit(12).lean();
-      }
-    }
-
-    // If still no products, do a broad 'name or description' match for the whole prompt
-    if ((!products || products.length === 0)) {
-      const re = { $regex: prompt.replace(/[^\w\s]/g, " ").trim(), $options: "i" };
-      products = await Product.find({ $or: [{ name: re }, { description: re }] }).limit(12).lean();
-    }
-
-    // Final fallback — no products found
-    if (!products || products.length === 0) {
-      return res.json({
-        text: "I couldn't find matching items in Bazario for that query. Try specifying a category (e.g., 'phone', 'watch') or a price range like 'under 20000'.",
-        structuredProducts: [],
-      });
-    }
-
-    // Normalize and return
-    const normalized = normalizeProducts(products);
-    return res.json({
-      text: `I found ${normalized.length} product(s) that match your request.`,
-      structuredProducts: normalized,
+    const aiResponse = await openai.chat.completions.create({
+      model: "gpt-4o-mini",
+      messages: [{ role: "user", content: aiPrompt }],
     });
-  } catch (err) {
-    console.error("Chat error:", err);
+
+    const aiData = JSON.parse(aiResponse.choices[0].message.content);
+
+    let responseText = "";
+    let products = [];
+
+    // If categoryName not provided, ask user what type of gift
+    if (!aiData.categoryName) {
+      responseText = `What type of gift would you like for your ${aiData.giftRecipient}? (e.g., Shoes, Bags, Novels, Electronics)`;
+      return res.json({ text: responseText, structuredProducts: [], conversation: { ...conversation, giftRecipient: aiData.giftRecipient } });
+    }
+
+    // Step 2: Build MongoDB query
+    const query = {};
+    if (aiData.categoryName) query.categoryName = { $regex: aiData.categoryName, $options: "i" };
+    if (aiData.maxPrice) query.price = { $lte: aiData.maxPrice };
+
+    products = await Product.find(query).limit(3).lean();
+
+    if (!products.length) {
+      responseText = `Sorry, we don't have any ${aiData.categoryName} for your ${aiData.giftRecipient} right now.`;
+      return res.json({ text: responseText, structuredProducts: [], conversation });
+    }
+
+    // Normalize product data
+    const structuredProducts = products.map(p => ({
+      _id: p._id,
+      name: p.name,
+      price: p.price,
+      categoryName: p.categoryName,
+      description: p.description,
+      imageUrl: p.imageUrl ? `http://localhost:${PORT}${p.imageUrl}` : "",
+      stock: p.stock,
+    }));
+
+    responseText = `Here are some ${aiData.categoryName} for your ${aiData.giftRecipient} 👇`;
+
+    return res.json({ text: responseText, structuredProducts, conversation });
+
+  } catch (error) {
+    console.error("AI Chat Error:", error);
     return res.status(500).json({
-      text: "Sorry — the assistant had an error. Try again.",
+      text: "AI recommendation failed. Try again later.",
       structuredProducts: [],
+      conversation: {},
     });
   }
 });
 
-// Optional separate /api/recommend endpoint (same logic, can be used by frontend)
-app.post("/api/recommend", async (req, res) => {
-  // simply forward to /api/chat logic
-  return app._router.handle(req, res, () => {}, "/api/chat", "POST");
-});
-
-// START
+// ----------------------
+// SERVER START
+// ----------------------
 app.listen(PORT, () => {
-  console.log(`Bazario backend running on http://localhost:${PORT}`);
+  console.log(`✅ Bazario backend running on http://localhost:${PORT}`);
 });

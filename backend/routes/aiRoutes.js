@@ -1,64 +1,101 @@
-// routes/aiRoutes.js
 import express from "express";
-import { GoogleGenerativeAI } from "@google/generative-ai";
+import OpenAI from "openai";
 import Product from "../models/Product.js";
 
 const router = express.Router();
 
-// Gemini model setup
-const genAI = new GoogleGenerativeAI(process.env.GEMINI_API_KEY);
-const model = genAI.getGenerativeModel({ model: "gemini-2.5-flash" });
+// -------------------
+// OPENAI SETUP
+// -------------------
+const openai = new OpenAI({
+  apiKey: process.env.OPENAI_API_KEY,
+});
 
-// -------------------------------
-// PRODUCT RECOMMENDATION FUNCTION
-// -------------------------------
-const get_recommendations = async (category, preference) => {
-  try {
-    const query = { categoryName: { $regex: category, $options: "i" } };
-
-    if (preference?.includes("budget")) query.price = { $lt: 5000 };
-    if (preference?.includes("high-end")) query.price = { $gt: 20000 };
-
-    const products = await Product.find(query)
-      .limit(5)
-      .select("name price imageUrl")
-      .lean();
-
-    return products;
-  } catch (err) {
-    console.error("DB ERROR:", err);
-    return [];
-  }
-};
-
-// -------------------------------
-// AI CHAT
-// -------------------------------
+// -------------------
+// AI CHAT ROUTE
+// -------------------
 router.post("/chat", async (req, res) => {
   const { prompt } = req.body;
 
+  if (!prompt) {
+    return res.status(400).json({
+      text: "Prompt is required",
+      structuredProducts: [],
+    });
+  }
+
   try {
-    const ai = await model.generateContent(prompt);
-    const textResponse = ai.response.text();
+    // 1️⃣ Extract intent using AI
+    const aiPrompt = `
+You are an AI shopping assistant.
 
-    // Extract product category (simple)
-    const extractCategory = textResponse.match(/category:\s*(\w+)/i);
-    let category = extractCategory ? extractCategory[1] : null;
+Extract from the user message:
+- categoryName
+- maxPrice (number, PKR)
+- brand
+- categoryType ("New" or "Old")
 
-    let recommendedProducts = [];
+Respond ONLY in JSON:
+{
+  "categoryName": "",
+  "maxPrice": null,
+  "brand": "",
+  "categoryType": ""
+}
 
-    if (category) {
-      recommendedProducts = await get_recommendations(category, "budget");
+User message: "${prompt}"
+`;
+
+    const aiResponse = await openai.chat.completions.create({
+      model: "gpt-4o-mini",
+      messages: [{ role: "user", content: aiPrompt }],
+    });
+
+    const intent = JSON.parse(aiResponse.choices[0].message.content);
+
+    // 2️⃣ Build MongoDB query
+    const query = {};
+
+    if (intent.categoryName) {
+      query.categoryName = { $regex: intent.categoryName, $options: "i" };
     }
 
+    if (intent.brand) {
+      query.brand = { $regex: intent.brand, $options: "i" };
+    }
+
+    if (intent.categoryType) {
+      query.categoryType = intent.categoryType;
+    }
+
+    if (intent.maxPrice) {
+      query.price = { $lte: intent.maxPrice };
+    }
+
+    let products = await Product.find(query)
+      .limit(8)
+      .select(
+        "name price imageUrl categoryName brand rating stock description"
+      )
+      .lean();
+
+    // fallback if no products found
+    if (!products.length) {
+      products = await Product.find().limit(8).lean();
+    }
+
+    // 3️⃣ Response
     res.json({
-      text: textResponse,
-      products: recommendedProducts,
+      text: "Here are the best products for you 👇",
+      structuredProducts: products,
     });
 
   } catch (error) {
-    console.error("AI CHAT ERROR:", error);
-    res.status(500).json({ text: "AI service is unavailable right now." });
+    console.error("❌ AI ERROR:", error);
+    res.status(500).json({
+      text: "AI service is unavailable",
+      structuredProducts: [],
+    });
   }
 });
 

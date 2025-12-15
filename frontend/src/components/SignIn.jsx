@@ -644,7 +644,7 @@ export default function SignIn() {
     setFormData({ ...formData, [e.target.name]: e.target.value });
 
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-gray-900 bg-opacity-80 backdrop-blur-sm">
+    <div className="fixed inset-0 z-50 flex items-center justify-center p-2 bg-gray-900 bg-opacity-80 backdrop-blur-sm">
       <div
         className="absolute inset-0"
         onClick={() => navigate("/")}
@@ -652,8 +652,8 @@ export default function SignIn() {
       <div className="relative bg-gray-800 rounded-xl shadow-2xl w-full max-w-md border border-gray-700 transform transition-all duration-300 scale-95 hover:scale-100">
 
         {/* HEADER */}
-        <div className="flex items-center justify-between p-5 border-b border-gray-700 bg-gray-700 rounded-t-xl">
-          <div className="flex items-center gap-3">
+        <div className="flex items-center justify-between p-2 border-b border-gray-700 bg-gray-700 rounded-t-xl">
+          <div className="flex items-center gap-1">
             <div className="p-2 bg-gradient-to-r from-purple-600 to-indigo-700 rounded-lg shadow-lg">
               <FaShoppingBag className="text-white text-xl" />
             </div>
@@ -671,7 +671,7 @@ export default function SignIn() {
         </div>
 
         {/* ROLE SELECTOR */}
-        <div className="flex gap-3 mb-5 text-base px-5 pt-5">
+        <div className="flex gap-2 mb-3 text-base px-3 pt-4">
           <button
             type="button"
             onClick={() => setRole("buyer")}
@@ -697,7 +697,7 @@ export default function SignIn() {
         </div>
 
         {/* FORM */}
-        <form onSubmit={handleSubmit} className="p-5">
+        <form onSubmit={handleSubmit} className="p-2">
           <div className="mb-4">
             <label className="block text-sm font-medium text-gray-300 mb-2">
               Email Address
